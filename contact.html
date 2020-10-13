@@ -1,0 +1,142 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>Contact</title>
+<link href="css/bootstrap.css" rel="stylesheet" type="text/css" media="all">
+<link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="Love hearts  Responsive web template, Bootstrap Web Templates, Flat Web Templates, Andriod Compatible web template, 
+Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyErricsson, Motorola web design" />
+<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+<link href='http://fonts.useso.com/css?family=Poiret+One' rel='stylesheet' type='text/css'>
+<link href='http://fonts.useso.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+<script src="js/jquery-1.11.1.min.js"></script>
+<!---- start-smoth-scrolling---->
+<script type="text/javascript" src="js/move-top.js"></script>
+<script type="text/javascript" src="js/easing.js"></script>
+ <script type="text/javascript">
+		jQuery(document).ready(function($) {
+			$(".scroll").click(function(event){		
+				event.preventDefault();
+				$('html,body').animate({scrollTop:$(this.hash).offset().top},1200);
+			});
+		});
+	</script>
+<!---End-smoth-scrolling---->
+<link rel="stylesheet" href="css/swipebox.css">
+			<script src="js/jquery.swipebox.min.js"></script> 
+			    <script type="text/javascript">
+					jQuery(function($) {
+						$(".swipebox").swipebox();
+					});
+				</script>
+
+
+</head>
+<body>
+   <div class="header" id="home">
+   	<div class="container">
+   		<div class="header-top">
+		<div class="logo">
+   			<a href="index.html">love hearts</a>
+   		</div>
+   		<div class="top-menu">
+		<span class="menu"><img src="images/nav.png" alt=""/> </span>
+
+   <ul>
+   	<li><a href="index.html">Main Page</a></li>
+    <li><a href="about.html">About</a></li>
+  	<li><a href="services.html">Services</a></li>
+	<li><a href="gallery.html">Gallery</a></li>
+   	<li><a href="Events.html">Events</a></li>
+   	<li><a href="contact.html" class="active">Contact</a></li>
+    </ul>
+     <!-- script for menu -->
+				
+		 <script>
+		 $("span.menu").click(function(){
+		 $(".top-menu ul").slideToggle("slow" , function(){
+		 });
+		 });
+		 </script>
+
+					<!-- //script for menu -->
+
+	</div>
+	<div class="clearfix"></div>
+</div>
+   </div>
+   	</div>
+	<div class="main">
+		<div class="container">
+			<div class="contact">
+					<div class="contact-head text-center">
+						<h3>Contact us</h3>
+					</div>		
+					<!----- contact-grids ----->		
+					<div class="contact-grids">
+						<div class="contact-map">
+							<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1578265.0941403757!2d-98.9828708842255!3d39.41170802696131!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x54eab584e432360b%3A0x1c3bb99243deb742!2sUnited+States!5e0!3m2!1sen!2sin!4v1407515822047"> </iframe>
+						</div>
+						<!----- contact-form ------>
+						<div class="contact-form">
+							<form>
+								<div class="contact-form-row">
+									<div>
+										<span>Name :</span>
+										<input type="text" class="text" value="" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = '';}">
+									</div>
+									<div>
+										<span>Email :</span>
+										<input type="text" class="text" value="" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = '';}">
+									</div>
+									<div>
+										<span>Subject :</span>
+										<input type="text" class="text" value="" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = '';}">
+									</div>
+									<div class="clearfix"> </div>
+								</div>
+								<div class="clearfix"> </div>
+								<div class="contact-form-row2">
+									<span>Message :</span>
+									<textarea> </textarea>
+								</div>
+								<input type="submit" value="send">
+							</form>
+						</div>
+						<!----- contact-form ------>
+					</div>
+					<!----- contact-grids ----->
+			</div>	
+		</div>
+	</div>
+
+			
+				<div class="footer-section">
+					<div class="container">
+						<div class="footer-top">
+					<p>Copyright &copy; 2015.Company name All rights reserved.<a target="_blank" href="http://www.freemoban.com/">www.freemoban.com</a></p>
+					</div>
+					 <script type="text/javascript">
+						$(document).ready(function() {
+							/*
+							var defaults = {
+					  			containerID: 'toTop', // fading element id
+								containerHoverID: 'toTopHover', // fading element hover id
+								scrollSpeed: 1200,
+								easingType: 'linear' 
+					 		};
+							*/
+							
+							$().UItoTop({ easingType: 'easeOutQuart' });
+							
+						});
+					</script>
+				<a class="scroll" href="#home" id="toTop" style="display: block;"> <span id="toTopHover" style="opacity: 1;"> </span></a>
+
+					</div>
+					</div>
+
+	</body>
+</html>
