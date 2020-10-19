@@ -1,6 +1,6 @@
 #  c语言简要复习笔记
 
-> 参考资料：[简要C语言复习](https://xieguanglei.github.io/blog/post/c-language-review-notes.html)  [菜鸟enum教程](https://xieguanglei.github.io/blog/post/c-language-review-notes.html) 
+> 参考资料：[简要C语言复习](https://xieguanglei.github.io/blog/post/c-language-review-notes.html)  [菜鸟enum教程](https://www.runoob.com/cprogramming/c-enum.html) 
 
 ## 枚举enum
 
@@ -41,4 +41,29 @@ int main(){
 
 结构体定义数据结构形式，常常搭配着typedef使用
 
-1. 
+1. 注意结构体变量的
+
+```c
+# include<stdio.h>
+
+typedef struct Lnode //定义结构体
+{
+    int a;
+    float b;
+    char c;
+}Lnode,*Ln;//这里是重点，可以直接typedef Lnode和*Ln
+
+int main(){
+    //结构体 使用
+    Lnode L = {1,2.0,'c'}; //结构体初始化
+  	//对于结构体变量名来说，需要用.来访问结构体内部变量
+    printf("%d,%f,%c\n",L.a, L.b, L.c); 
+
+    Ln N = &L;
+  	//对于结构体指针来说，需要使用->来访问结构体内部变量
+    printf("%d,%f,%c",N->a, N->b, N->c);
+  
+    return 1;
+}
+```
+
