@@ -7,7 +7,7 @@
    <meta property="og:site_name" content="xiaoluxiang.xyz" />
 </head>
 
-> 本网站原计划为宝贝蝶设计，现为考研，临时改成跨平台的学习笔记同步工具。More information please click [Here](https://bbdie.xyz)
+>  本网站原计划为宝贝蝶设计，现为考研，临时改成跨平台的学习笔记同步工具。More information please click [Here](https://bbdie.xyz)
 
 # [<img src = "./images/zhuanyeke.png" height =100 width = 100>专业课](./专业课目录.md)
 
