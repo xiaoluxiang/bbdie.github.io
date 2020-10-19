@@ -1,6 +1,8 @@
-# 枚举enum
+#  c语言简要复习笔记
 
 > 参考资料：[简要C语言复习](https://xieguanglei.github.io/blog/post/c-language-review-notes.html)  [菜鸟enum教程](https://xieguanglei.github.io/blog/post/c-language-review-notes.html) 
+
+## 枚举enum
 
 C语言中的枚举可以简单理解为一组被宏定义后的变量组，
 
@@ -33,3 +35,10 @@ int main(){
 }
 ```
 
+
+
+## 结构体 struct typedef
+
+结构体定义数据结构形式，常常搭配着typedef使用
+
+1. 
