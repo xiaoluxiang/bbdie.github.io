@@ -128,3 +128,56 @@ int main(){
 
 ## 指针和数组
 
+如何理解指针：
+
+1. 指针在类型声明中，函数参数引用中等。应该使用int * a / int * a[]；
+2. 指针作为变量引用过程中，区分为三种状态：
+   - ap本身是一个指针类型的变量，表示其值即为其所指向的地址；
+   - *ap表示取其值（地址）的值；
+   - &ap表示取变量本身的地址；
+
+如何理解数组
+
+1. 数组为空间地址上连续的一段，每固定长度表示一个元素。且各个元素种类需要保持一致；
+2. 对于一维二维数组，我们可以通过sizeof来取到其长度；
+3. 数组变量名指向其首地址；
+
+```c
+//数组和指针
+# include<stdio.h>
+//数组遍历函数
+int printeveryone(int a[]){
+    
+    for(int i=0;i<10;i++){
+        printf("%d\n",a[i]);
+    }
+    return 1;
+}
+
+int main(){
+    int a[10]={0,1,2};
+    int b[8][9] = {0,1,2,3};
+    printeveryone(a);
+
+    //一维数组size获取:
+    printf("这里是一维数组长度：%d\n",sizeof(a)/sizeof(a[0]));
+    
+    //二维数组size获取:
+    /*sizeof(array[0][0])为一个元素占用的空间，
+    sizeof(array[0])为一行元素占用的空间，
+    sizeof(array)为整个数组占用的空间*/
+    printf("这里是二维数组列长：%d\n",sizeof(b[0])/sizeof(b[0][0]));
+    printf("这里是二维数组的宽度：%d\n",sizeof(b)/sizeof(b[0]));
+
+    //指针部分
+    int * ap = &a;
+    //指针实现遍历整个数组
+    for(int i = 0;i < sizeof(a)/sizeof(a[0]);i++){
+        printf("指针遍历中:%d,%d,%d\n",*ap,ap,&ap);
+        *(ap++);
+    }
+
+    
+}
+```
+
