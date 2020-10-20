@@ -250,27 +250,30 @@ int main(){
 > 记得引入头文件：\#icnlude<string.h\>
 
 1. 使用 `strlen` 取字符串的长度；
+
 2. 使用 `strchr` 取某个字符第一次出现的位置（指针）；
+
 3. 使用 `strcpy` 将一个字符串复制到另一个字符串中；
+
 4. 使用 `strcat` 将一个字符串追加到另一个字符串中。
 
-```c
-#include <stdio.h>
-#include <string.h>
-#define MAX 1000
+   ```c
+   #include <stdio.h>
+   #include <string.h>
+   #define MAX 1000
+   
+   void main() {
+       char s[MAX] = "hello world";
+       char t[MAX] = "";
+   
+       int len = strlen(s); // len is 11
+       char *pl = strchr(s, 'l'); // (pl-s) is 2
+       strcpy(t, s); // t is "hello world"
+       strcat(t, s); // t is "hello worldhello world"
+   }
+   ```
 
-void main() {
-    char s[MAX] = "hello world";
-    char t[MAX] = "";
-
-    int len = strlen(s); // len is 11
-    char *pl = strchr(s, 'l'); // (pl-s) is 2
-    strcpy(t, s); // t is "hello world"
-    strcat(t, s); // t is "hello worldhello world"
-}
-```
-
-
+   
 
 ## 条件和循环
 
@@ -313,16 +316,16 @@ void main() {
 
 循环
 
-1. While 
+1. while
 
-```c
-while(Exp)
-{
-   Exp;
-}
-```
+   ```c
+   while(Exp)
+   {
+      Exp;
+   }
+   ```
 
-2. for 
+2. for
 
    ```c
    for(exp1;exp2;exp3){
@@ -336,6 +339,29 @@ while(Exp)
    do{
      Exp;
    }while(Exp);
+   ```
+
+
+
+
+## 输入输出
+
+1. 输入
+
+   - scanf() //读取字符串时以空格为分隔，遇到空格就认为当前字符串结束了，所以无法读取含有空格的字符串。
+   - getchars()  = scarf("%d", &var); 用法：var = getchars();
+   - gets(var )  //认为空格也是字符串的一部分，只有遇到回车键时才认为字符串输入结束，所以，不管输入了多少个空格，只要不按下回车键，对 gets() 来说就是一个完整的字符串。
+
+   ```c
+   
+   ```
+
+   
+
+2. 输出
+
+   ```c
+   
    ```
 
    
