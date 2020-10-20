@@ -237,3 +237,31 @@ int main(){
 }
 ```
 
+## 字符串操作
+
+> 记得引入头文件：\#icnlude<string.h\>
+
+1. 使用 `strlen` 取字符串的长度；
+2. 使用 `strchr` 取某个字符第一次出现的位置（指针）；
+3. 使用 `strcpy` 将一个字符串复制到另一个字符串中；
+4. 使用 `strcat` 将一个字符串追加到另一个字符串中。
+
+```c
+#include <stdio.h>
+#include <string.h>
+#define MAX 1000
+
+void main() {
+    char s[MAX] = "hello world";
+    char t[MAX] = "";
+
+    int len = strlen(s); // len is 11
+    char *pl = strchr(s, 'l'); // (pl-s) is 2
+    strcpy(t, s); // t is "hello world"
+    strcat(t, s); // t is "hello worldhello world"
+}
+```
+
+
+
+复习结束🔚睡觉😪
