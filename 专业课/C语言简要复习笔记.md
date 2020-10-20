@@ -181,3 +181,59 @@ int main(){
 }
 ```
 
+## 堆内存和文件操作
+
+堆内存通过malloc请求，得到的是地址块的首地址，单个则为指针，多个理解为数组。
+
+这里的文件操作只是做了一些小小了解：文件打开（模式）与关闭，文件fputc/fputs/fgetc/fgets的用法，文件指针的偏移。
+
+```c
+// 堆内存和读写文本方法
+# include <stdio.h>
+# include <stdlib.h>
+int main(){
+    // 申请堆内存，
+    int *a = (int *) malloc(sizeof(int));
+    *a=1;
+    printf("%d",*a);
+    free(a);
+
+    //指针 堆内存 数组三合一
+    int *b = (int *) malloc(sizeof(int)*10);
+    //此处如何理解b:理解成数组a[]中的a,其后的访问方法就是b[i];
+    for(int i = 0; i<10; i++){
+        printf("%d\n",b[i]);
+    }
+    free(b);
+    
+
+    // 文件操作
+    FILE * fp = fopen("./txt.txt","a+");
+    
+    char c = 'c';
+    char d[] = "\nzhelishifputsaffect\n";
+    //测试方法：读 - 写 -（移动）- 再读
+    printf("%c",fgetc(fp));
+
+
+    fputc(c,fp);
+    fputs(d,fp);
+
+    
+    
+    //fp 位置移动
+    /*
+    int fseek(FILE * stream, long offset, int fromwhere);
+    【参数】stream为文件指针，offset为偏移量，fromwhere为指针的起始位置。
+
+    SEEK_SET：从距文件开头 offset 位移量为新的读写位置；
+    SEEK_CUR：以目前的读写位置往后增加 offset 个位移量；
+    SEEK_END：将读写位置指向文件尾后再增加 offset 个位移量。
+    */
+    fseek(fp,-4,SEEK_CUR);
+    printf("%c",fgetc(fp));
+    fclose(fp);
+    return 1;
+}
+```
+
