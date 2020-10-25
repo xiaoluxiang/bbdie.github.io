@@ -398,6 +398,84 @@ print(np.array(result))
 
  输出：输出每次划分的基准元素和该数在划分后的数组中的位置，以空格分隔。从小到大的排序结果，以空格分隔，起始和结束用方框号。
 
+tips:
+
+1. 算法很简单，几点需要格外注意，把代码模块化，第一部分是不断的划分，与归并排序不同的是，归并是划分完了再合并排序，快速排序是选基准分俩部分，然后按照分好的基准再划分。
+
+   ```c
+   mergesort(arr, left,middle);
+   mergesort(arr, middle+1,right);
+   merge(arr,left,middle,right);
+   ```
+
+   ```c
+   middle = pat(arr,left,right);
+   quickpat(arr,left,middle-1);
+   quickpat(arr,middle,right);
+   ```
+
+2. Coding 过程中，注意middle取值！上一个不能是middle，否则会陷入无限循环中♻️
+
+```c
+#include<stdio.h>
+void print_arr(int arr[], char str[],int n){
+    printf("\n%s:",str);
+    for(int times = 0; times<n; times++){
+        printf("%d ",arr[times]);
+    }
+    printf("\n");
+}
+
+// 快速排序法-每次划分都以最后一个元素为基准
+int pat(int arr[], int left, int right){
+    int temp = 0;
+    int key = arr[right];
+    int i = left-1;
+    int j = left;
+  	
+  	//这里i，j要理解是什么作用，i是被动，j去主动移动，比较key。
+    for(;j<right;j++){
+        if(arr[j]<key){
+            i++;
+            temp = arr[j];
+            arr[j] = arr[i];
+            arr[i] = temp;
+        }
+    }
+		
+  	// 最后莫忘记将arr[right]和arr[i+1]互换
+    temp = arr[i+1];
+    arr[i+1] = arr[right];
+    arr[right] = temp;
+    
+    print_arr(arr,"此时的arr",7);
+
+    return i+1;
+}
+
+//根据划分结果得到基准，然后再利用基准进行再划分。
+int quickpat(int arr[], int left, int right){
+    int key =0;
+    if (left < right){
+        key = pat(arr,left,right);
+        printf("每次划分结果key：%d",key);
+        quickpat(arr,left,key-1);
+        quickpat(arr,key,right);
+    }
+    return 0;
+}
+
+int main(){
+    int arr[7] = {48, 38, 65, 97, 76, 13,27};
+    quickpat(arr,0,6);
+    print_arr(arr,"最后结果",7);
+}
+
+
+```
+
+
+
 ```python 
 import numpy as np
 
