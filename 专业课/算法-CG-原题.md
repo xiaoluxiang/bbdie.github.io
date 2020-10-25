@@ -87,6 +87,65 @@ perm(ls, 0, len(ls))
 
  输出：0，表示特定元素11在有序数组中不存在。
 
+C 语言改写:
+
+tips:
+
+1. 理解二分查找法含义 有序中寻找特定value，可以在for循环中不断二分，然后（value，arr[middle]）&（left &right）进行比较，满足退出return，否则调整middle和left和right
+2. 比较left & right时候，当其相等，value和arr[middle]还不相等，需要退出！
+
+```c
+// 二分查找法
+#include<stdio.h>
+int find(int arr[], int n,int value){
+    int right, left, middle;
+    right = n;
+    left = 0;
+    middle = (right + left)/2;
+    for(;left <= right; middle = ((right+left)/2)){
+        
+        printf("middle:%d,left:%d,right:%d\n",middle,left,right);
+        // 命中返回
+        if (value == arr[middle]){
+            return middle+1;
+        }
+        
+      	// 左右相等都未命中，return 0;
+        if(left == right){
+            if(value != arr[middle]){
+                return 0;
+            }
+        }
+      
+      	// 左右递归往中间找
+        else
+        {
+            if(value > arr[middle]){
+                left = middle +1;
+            }
+            if(value < arr[middle]){
+                right = middle - 1;
+            }
+        }
+        
+    }
+    return 0;
+}
+
+int main(){
+    int arr[10] = {1,2,3,4,5,6,7,8,9,10};
+    printf("执行find函数开始：\n");
+    for(int i = 0;i<=12;i++){
+        printf("最终结果：%d\n",find(arr,10,i));
+        printf("\n");
+    }
+    return 0;
+}
+
+```
+
+
+
 
 
 ```python 
@@ -164,6 +223,100 @@ if __name__ == "__main__":
  输入：7个整数，以空格分隔。
 
  输出：输出每次划分的结果和最终从小到大排序好的结果。起始和结束加方框号。
+
+
+
+Tips:
+
+1. 合并排序理解：先拆分再合并，拆分到数组每一个元素，从俩个元素合并开始，合并，类似于树。每每合并的俩个数组，都是有序数组。
+2. 变量起名字不能过于随意，arr和arr1就是最垃圾的命名方式
+3. 合并排序中，要注意那个middle在c中你要手动分类下，left - middle，middle+1 - right
+4. 心中要有大概目的，这一部分实现什么功能，在一部分实现什么功能。
+
+```c
+#include<stdio.h>
+
+//这一部分是作为一个打印函数来使用，传入数组，传入tips，传入数组长度。
+void print_arr(int arr[], char str[],int n){
+    printf("\n%s:",str);
+    for(int times = 0; times<n; times++){
+        printf("%d",arr[times]);
+    }
+    printf("\n");
+}
+
+
+//合并函数是作为一个合并俩个数组来使用，传入待排序数组，中间值，left，right
+int merge(int arr[], int left, int middle, int right){
+    print_arr(arr,"开始合并前",3);
+
+    int i,j,k;
+    int arr1[right-left+1];
+    for(k=0;k<right-left+1;k++){
+        arr1[k]=arr[k];
+    }
+    //printf("\n%d\n",right-left);
+    print_arr(arr1,"这个是arr1",right-left+1);
+
+  //循环找当前最小值放入数组
+    for(i = left, j = middle+1, k=0;(i<middle+1)&&(j<=right);k++){
+        printf("\nso:%d%d",i,j);
+        if(arr1[i]<=arr1[j]){
+            arr[k] = arr1[i];
+            i++;
+            
+            
+        }
+        else
+        {
+            arr[k] = arr1[j];
+            j++;
+            
+        }
+        
+    }
+   
+  //当一个数组耗尽，选择另外一个数组全部加入！
+    if (i>=middle+1){
+        for(;j<=right;j++){
+            arr[k] = arr1[j];
+            k++;
+            
+        }
+    }
+    if (j>right){
+        for(;i<middle+1;i++){
+            arr[k] = arr1[i];
+            k++;
+            
+        }
+    }
+    
+    print_arr(arr,"合并后数组",3);
+    return 0;
+}
+
+
+//不断划分数组，就是先划分在合并
+int mergesort(int arr[], int left, int right){
+    if (left == right){
+        return 0;
+    }
+    int middle = (left+right)/2;
+    mergesort(arr, left,middle);
+    mergesort(arr, middle+1,right);
+    merge(arr,left,middle,right);
+    return 0;
+}
+
+int main(){
+    int a[3]= {2,35,1};
+    mergesort(a,0,2);
+  
+    print_arr(a,"最后的结果",3);
+    return 0;
+}
+```
 
 
 
@@ -2174,6 +2327,81 @@ print(cost[0])
 
 
 
+
+```
+
+## 错误代码FUCK
+
+```c
+// 归并排序法
+#include<stdio.h>
+int meg(int arr[], int left, int right){
+    int size = right - left +1;
+    int arr1[size];
+    for(int i; i<size; i++){
+        arr1[i] = arr[i];
+    }
+    int i, j;
+    i = left;
+    j = (right+left)/2;
+    while (i<((right+left)/2)&&(j<=right))
+    {
+        if (arr1[i]>arr1[j]){
+            arr[left] = arr1[j];
+        }
+        else
+        {
+            arr[left] = arr1[i];
+        }
+        i++;
+        j++;
+        left++;
+    }
+
+    if ((i<right+left)/2){
+        for(;i<(right+left)/2;i++){
+            arr[left]= arr1[i];
+            left++;
+        }
+    }
+    else
+    {
+        for(;j<=right;j++){
+            arr[left]= arr1[j];
+            left++;
+        }
+    }
+
+    return 0;
+};
+int megsort(int arr[], int left, int right){
+    int middle = (left+right)/2;
+    if(left == right){
+        return 0;
+    }
+    megsort(arr,left,middle-1);
+    megsort(arr, middle,right);
+
+    printf("\n开始打印arr\n");
+    for(int i =0; i<3; i++){
+        printf("%d",arr[i]);
+    }
+    printf("打印结束\n\n");
+
+    //meg(arr,left,right);
+    return 0;
+}
+
+int main(){
+    int a[3] = {3,2,5};
+    int left = 0;
+    int right = 2;
+    megsort(a,left,right);
+    printf("下面是最终结果\n");
+    for(int i=0; i<3;i++){
+        printf("%d\n",a[i]);
+    }
+}
 
 ```
 
