@@ -14,3 +14,5 @@
 
 # [<img src = "./images/zhuanyeke.png" height =100 width = 100>英语](./英语目录.md)
 
+#### <img src = "./images/zhuanyeke.png" height =80 width = 80>[want to try list](./想法清单.md)
+

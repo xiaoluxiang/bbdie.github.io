@@ -532,6 +532,80 @@ if __name__ == "__main__":
 
  输出：2，表示第3小元素为2。
 
+```c
+#include<stdio.h>
+#include<stdlib.h>
+#include<time.h>
+
+void print_arr(int arr[], char str[],int n,int m){
+    printf("\n%s:",str);
+    for(int times = n; times<=m; times++){
+        printf("%d ",arr[times]);
+    }
+    printf("\n");
+}
+
+//随机划分，线性时间查找
+int pat(int arr[], int left, int right){
+    int i, j, temp;
+    time_t t;
+
+    srand((unsigned) time(&t));
+    j = rand()%(right - left+1)+left;
+    
+    printf("快排的各参数值\nleft:%d,right:%d,j:%d\n",left,right,j);
+    
+    //这里将right和j互换，然后可以照抄快排
+    temp = arr[right];
+    arr[right] = arr[j];
+    arr[j] = temp;
+
+    for(i = left - 1,j = left; j<right; j++){
+        if(arr[j]<arr[right]){
+            i++;
+            temp = arr[j];
+            arr[j] = arr[i];
+            arr[i] = temp;
+        }
+    }
+    //循环结束，调整i+1和right的位置
+    temp = arr[right];
+    arr[right] = arr[i+1];
+    arr[i+1] = temp;
+    
+    return i+1;
+}
+
+int quickseek(int arr[], int left, int right, int k){
+    print_arr(arr, "每次quickseek开始的arr",left,right );
+    printf("每次quickseek开始参数：left:%d,right:%d,k:%d\n",left,right,k);
+    if(left == right){
+        return arr[left];
+    }
+    int i = pat(arr,left,right);
+    if (i-left+1>k){
+        printf("下一轮quickseek参数：left:%d,right:%d,k:%d",left,i,k);
+        return quickseek(arr,left,i,k);
+    }
+    else
+    {
+        printf("\n\n下一轮quickseek参数：left:%d,right:%d,k:%d",i+1,right,k-i);
+        return quickseek(arr,i+1,right,k-i+left-1);
+    }
+    
+}
+
+int main(){
+    int arr[10] = {1,2,3,4,5,6,7,8,9,10};
+    int n ;
+    scanf("%d",&n);
+    printf("%d\n",quickseek(arr,0,9,n));
+    return 0;
+}
+```
+
+
+
 ```python
 import random
 import numpy as np
