@@ -1053,6 +1053,79 @@ printoptimalparens(s,1,n)
 
  输出：矩阵c，和序列X和Y的最长公共子序列。
 
+
+
+```c
+#include<stdio.h>
+
+
+/*
+[[0 0 0 0 0 0 0]
+
+[0 0 0 0 1 1 1]
+
+[0 1 1 1 1 2 2]
+
+[0 1 1 2 2 2 2]
+
+[0 1 1 2 2 3 3]
+
+[0 1 2 2 2 3 3]
+
+[0 1 2 2 3 3 4]
+
+[0 1 2 2 3 4 4]]
+*/
+
+
+int get_cls(char *arr_a, char *arr_b, int n, int m, int *s, int *l){
+    //双重循环填表 m:8
+    for(int i = 1; i<m; i++){
+        
+        for(int j = 1; j<n; j++){
+            // 如果匹配则 斜上对角+1
+            if(arr_a[i] == arr_b[j]){
+                *(s+i*n+j) = *(s+(i-1)*n+j-1) +1;
+                *(l+i*n+j) = 1;
+                continue;
+            }
+            
+            if(*(s+i*n+j-1) >= *(s+(i-1)*n+j)){
+                *(s+i*n+j) = *(s+i*n+j-1);
+                *(l+i*n+j) = 2;
+                continue;
+            }
+            *(s+i*n+j) = *(s+(i-1)*n+j);
+            *(l+i*n+j) = 3;
+        }
+    }
+    return 0;
+}
+
+int main(){
+    char arr_a[] = {'1','A', 'B', 'C', 'B', 'D', 'A', 'B'};
+    char arr_b[] = {'1','B', 'D', 'C', 'A', 'B', 'A'};
+    int s[8][7] = {0};
+    int l[8][7] = {0};
+    get_cls(arr_a, arr_b, 7,8, &s[0][0], &l[0][0]);
+   
+    for(int i = 0; i<8; i++){
+        for(int j =0; j<7; j++){
+            printf(" %d ",s[i][j]);
+        }
+        printf("\n\n");
+    }
+    
+    
+}
+
+
+```
+
+
+
+
+
 ```python
 import numpy as np
 
