@@ -668,6 +668,85 @@ if __name__ == '__main__':
 
 
 
+```c
+#include<stdio.h>
+#include<stdlib.h>
+#include<time.h>
+
+void print_arr(int arr[], char str[],int n,int m){
+    printf("\n%s:",str);
+    for(int times = n; times<=m; times++){
+        printf("%d ",arr[times]);
+    }
+    printf("\n");
+}
+
+//随机划分，线性时间查找
+int pat(int arr[], int left, int right){
+    int i, j, temp;
+    time_t t;
+
+    srand((unsigned) time(&t));
+    j = rand()%(right - left)+left;
+    
+    printf("快排的各参数值\nleft:%d,right:%d,j:%d\n",left,right,j);
+    
+    //这里将right和j互换，然后可以照抄快排
+    temp = arr[right];
+    arr[right] = arr[j];
+    arr[j] = temp;
+
+    for(i = left - 1,j = left; j<right; j++){
+        if(arr[j]<arr[right]){
+            i++;
+            temp = arr[j];
+            arr[j] = arr[i];
+            arr[i] = temp;
+        }
+    }
+    //循环结束，调整i+1和right的位置
+    temp = arr[right];
+    arr[right] = arr[i+1];
+    arr[i+1] = temp;
+    
+    return i+1;
+}
+
+int quickseek(int arr[], int left, int right, int k){
+    print_arr(arr, "每次quickseek开始的arr",left,right );
+    //printf("每次quickseek开始参数：left:%d,right:%d,k:%d\n",left,right,k);
+    if(left == right){
+        return arr[left];
+    }
+    int i = pat(arr,left,right);
+    if (i-left+1>k){
+        //printf("下一轮quickseek参数：left:%d,right:%d,k:%d",left,i,k);
+        return quickseek(arr,left,i,k);
+    }
+    else
+    {
+        //printf("\n\n下一轮quickseek参数：left:%d,right:%d,k:%d",i+1,right,k-i);
+        return quickseek(arr,i+1,right,k-i+left-1);
+    }
+    
+}
+
+int main(){
+    int arr[10] = {1,2,3,4,5,6,7,8,9,10};
+    int n ;
+    scanf("%d",&n);
+    printf("%d\n",quickseek(arr,0,9,n-1));
+    return 0;
+}
+
+
+
+```
+
+
+
+
+
 ```python
 import numpy as np
 
@@ -734,7 +813,7 @@ if __name__ == '__main__':
 
 ```
 
-# 【问题描述】使用动态规划算法解矩阵连乘问题，具体来说就是，依据其递归式自底向上的方式进行计算，在计算过程中，保存已子问题答案，每个子问题只解决一次，在后面计算需要时只要简单查一下得到其结果，从而避免大量的重复计算，最终得到多项式时间的算法。
+# 【问题描述】使用动态规划算法解矩阵连乘问题，具体来说就是，依据其递归式自底向上的方式进行计算，在计算过程中，保存子问题答案，每个子问题只解决一次，在后面计算需要时只要简单查一下得到其结果，从而避免大量的重复计算，最终得到多项式时间的算法。
 
 【输入形式】在屏幕上输入矩阵连乘个数，和第1个矩阵的行数和第1个矩阵到第n个矩阵的列数，各数间都以一个空格分隔。
 
@@ -779,6 +858,95 @@ if __name__ == '__main__':
  输入：矩阵连乘个数为6，第1个矩阵的行数和第1个矩阵到第n个矩阵的列数，以空格分隔。
 
  输出：矩阵m，s，和矩阵连乘的最优计算次序
+
+
+
+Tips:
+
+
+
+```c
+#include<stdio.h>
+
+int dongtai(int arr[], int n, int *m, int *s){
+    int temp = 0;
+    // 初始化对角线为0；
+    for(int i = 0;i<n;i++){
+        *(m+i*(n+1)+i) = 0;
+        *(s+i*(n+1)+i) = 0;
+    }
+    for(int r = 2; r <= n; r++){
+        for(int i = 1; i <= n-r+1; i++){
+            int j = r+i-1;
+            *(m+i*(n+1)+j) = *(m+i*(n+1)+i)+*(m+(i+1)*(n+1)+j)+arr[i-1]*arr[i]*arr[j];
+            *(s+i*(n+1)+j) = i;
+            for(int k = i+1 ; k<j; k++){
+                temp = *(m+(i*(n+1))+k)+*(m+(k+1)*(n+1)+j)+arr[i-1]*arr[k]*arr[j];
+                if(temp<*(m+i*(n+1)+j)){
+                    *(m+i*(n+1)+j) = temp;
+                    *(s+i*(n+1)+j) = k;
+                }
+            }
+
+            
+        }
+    }
+    return 0;
+}
+
+
+int main(){
+    int arr[] = {30, 35, 15, 5, 10, 20, 25};
+    int m[7][7] = {0};
+    int s[7][7] = {0};
+    dongtai(arr, 6, &m[0][0],&s[0][0]);
+    for(int i = 1; i<7; i++){
+        for(int j = 1; j<7; j++){
+            printf("-------%d----",m[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+/*
+ 6
+
+ 30 35 15 5 10 20 25
+
+【样例输出】
+
+ [[  0 15750 7875 9375 11875 15125]
+
+ [  0   0 2625 4375 7125 10500]
+
+ [  0   0   0  750 2500 5375]
+
+ [  0   0   0   0 1000 3500]
+
+ [  0   0   0   0   0 5000]
+
+ [  0   0   0   0   0   0]]
+
+ [[0 1 1 3 3 3]
+
+ [0 0 2 3 3 3]
+
+ [0 0 0 3 3 3]
+
+ [0 0 0 0 4 5]
+
+ [0 0 0 0 0 5]
+
+ [0 0 0 0 0 0]]
+
+ ((A1(A2A3))((A4A5)A6))
+*/
+
+```
+
+
+
+
 
 ```python
 import numpy as np
@@ -831,9 +999,7 @@ printoptimalparens(s,1,n)
 
 ```
 
-# 【问题描述】使用动态规划算法解最长公共子序列问题，具体来说就是，依据其递归式
-
-  自底向上的方式依次计算得到每个子问题的最优值。
+# 【问题描述】使用动态规划算法解最长公共子序列问题，具体来说就是，依据其递归式自底向上的方式依次计算得到每个子问题的最优值。
 
 【输入形式】在屏幕上输入两个序列X和Y，序列各元素数间都以一个空格分隔。
 
