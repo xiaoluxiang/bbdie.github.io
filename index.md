@@ -1,17 +1,8 @@
->  本网站原计划为宝贝蝶设计，现为考研，临时改成跨平台的学习笔记同步工具。More information please click [Here](https://bbdie.xyz)
+>  寇可往，吾亦可往，时光流逝，书籍常伴
 
-# [<img src = "./images/ky/zhuanyeke.png" height =100 width = 100>专业课](./专业课目录.md)
-
-
-
-# [<img src = "./images/ky/zhuanyeke.png" height =100 width = 100>高等数学](./高等数学目录.md)
+# [<img src = "2021/images/ky/zhuanyeke.png" height =100 width = 100>Linux](./Linux.md)
 
 
 
-# [<img src = "./images/ky/zhuanyeke.png" height =100 width = 100>政治](./政治目录.md)
+# [<img src = "2021/images/ky/zhuanyeke.png" height =100 width = 100>JUC](./JUC.md)
 
-
-
-# [<img src = "./images/ky/zhuanyeke.png" height =100 width = 100>英语](./英语目录.md)
-
-# [<img src = "./images/ky/zhuanyeke.png" height =100 width = 100>每日任务](./每日任务.md)
