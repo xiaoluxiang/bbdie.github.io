@@ -18,3 +18,6 @@ small squirrel good night
 ## 1093
 
 ​	mysql出现You can’t specify target table for update in FROM clause 这个错误的意思是不能在同一个sql语句中，先select同一个表的某些值，然后再update这个表。**select的结果再通过一个中间表select多一次，就可以避免这个错误**
+
+## Mysql 锁的
+
