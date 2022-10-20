@@ -1,4 +1,10 @@
-# 代理
+# 1.Java
+
+[***内部类***](https://www.cnblogs.com/GrimMjx/p/10105626.html#_label2_1)
+
+​	非静态内部类：其实例不可单独存在，通过外部类的所持有其构造方法进行创建。该方法是否有该名字的成员变量 - 直接用该变量名，内部类中是否有该名字的成员变量 - 使用this.变量名。外部类中是否有该名字的成员变量 - 使用外部类的类名.this.变量名<br>	静态内部类不会持有外部类的对象，只是借壳，变量访问规则参考静态变量。
+
+# 2. 代理
 
 1. 静态代理实现较简单，只要代理对象对目标对象进行包装，即可实现增强功能，但静态代理只能为一个目标对象服务，如果目标对象过多，则会产生很多代理类。
 2. JDK动态代理需要目标对象实现业务接口，代理类只需实现InvocationHandler接口。
@@ -9,11 +15,11 @@
 
 
 
-# BIO、NIO、AIO、IO多路复用、信号驱动IO
+# 3. BIO、NIO、AIO、IO多路复用、信号驱动IO
 
-作者：云飞扬°
-链接：https://www.nowcoder.com/discuss/820703
-来源：牛客网
+> 作者：云飞扬°
+> 链接：https://www.nowcoder.com/discuss/820703
+> 来源：牛客网
 
 ***BIO（Blocking IO）***<br>	阻塞型IO，用户线程发起IO请求后，必须等待内核线程准备好数据，并且将数据拷贝到用户线程存储空间，才会返回。期间用户线程处于阻塞状态，释放CPU资源。
 
@@ -46,7 +52,7 @@
 
  异步 I/O 与信号驱动 I/O 的区别在于，异步 I/O 的信号是通知应用进程 I/O 完成，而信号驱动 I/O 的信号是通知应用进程可以开始 I/O。
 
-# HashMap
+# 4. HashMap
 
 参考文章地址：https://www.nowcoder.com/discuss/820700
 
@@ -100,8 +106,67 @@ get：<br>1. 对于给定key的hashcode值定位数组位置，如果为null，�
    HashMap本来是数组+[链表](applewebdata://51410658-CE82-4A58-BD95-062F998FE491/jump/super-jump/word?word=链表)的形式，[链表](applewebdata://51410658-CE82-4A58-BD95-062F998FE491/jump/super-jump/word?word=链表)由于其查找慢的特点，所以需要被查找效率更高的树结构来替换。 
 
    如果用B/B+树的话，在[数据](applewebdata://51410658-CE82-4A58-BD95-062F998FE491/jump/super-jump/word?word=数据)量不是很多的情况下，[数据](applewebdata://51410658-CE82-4A58-BD95-062F998FE491/jump/super-jump/word?word=数据)都会“挤在”一个结点里面，这个时候遍历效率就退化成了[链表](applewebdata://51410658-CE82-4A58-BD95-062F998FE491/jump/super-jump/word?word=链表)。
+   
+   ```java
+   /**
+        * Implements Map.put and related methods.
+        *
+        * @param hash hash for key
+        * @param key the key
+        * @param value the value to put
+        * @param onlyIfAbsent if true, don't change existing value
+        * @param evict if false, the table is in creation mode.
+        * @return previous value, or null if none
+        */
+       final V putVal(int hash, K key, V value, boolean onlyIfAbsent,boolean evict) {
+           Node<K,V>[] tab; Node<K,V> p; int n, i;
+         // 如果数组为空，创建数组
+           if ((tab = table) == null || (n = tab.length) == 0)
+               n = (tab = resize()).length;
+         // 如果数组映射位置为空，直接等于替换
+           if ((p = tab[i = (n - 1) & hash]) == null)
+               tab[i] = newNode(hash, key, value, null);
+           else {
+               Node<K,V> e; K k;
+             // 如果hash相同并且（key相同或者equal），直接替换
+               if (p.hash == hash &&
+                   ((k = p.key) == key || (key != null && key.equals(k))))
+                   e = p;
+               else if (p instanceof TreeNode)
+                   e = ((TreeNode<K,V>)p).putTreeVal(this, tab, hash, key, value);
+               else {
+                   for (int binCount = 0; ; ++binCount) {
+                       if ((e = p.next) == null) {
+                           p.next = newNode(hash, key, value, null);
+                           if (binCount >= TREEIFY_THRESHOLD - 1) // -1 for 1st
+                               treeifyBin(tab, hash);
+                           break;
+                       }
+                       if (e.hash == hash &&
+                           ((k = e.key) == key || (key != null && key.equals(k))))
+                           break;
+                       p = e;
+                   }
+               }
+               if (e != null) { // existing mapping for key
+                   V oldValue = e.value;
+                   if (!onlyIfAbsent || oldValue == null)
+                       e.value = value;
+                   afterNodeAccess(e);
+                   return oldValue;
+               }
+           }
+           ++modCount;
+           if (++size > threshold)
+               resize();
+           afterNodeInsertion(evict);
+           return null;
+       }
+   ```
+   
+   
 
-# RPC
+# 5. RPC
 
 ***RPC (remote process call) 远程过程调用***
 
@@ -116,28 +181,33 @@ get：<br>1. 对于给定key的hashcode值定位数组位置，如果为null，�
 
 ![img](https://raw.githubusercontent.com/xiaoluxiang/picCollect/main/workDesign/img/v2-c0088ff8964a97f232081b5b2a08c068_720w.png)
 
-# Lambda表达式、函数式接口
+# 6. Lambda表达式、函数式接口
 
 1. 函数式接口，通过接口实现匿名类，我们可以实现类的一些属性
 
-# NIO
+# 7. NIO
 
 sockets是面向流的而非包导向的。它们可以保证发送的字节会按照顺序到达但无法承诺维持字节分组
 
-# JC
+# 8: 日期
 
-> 性能优化解决方案总体思路：1. 单体应用业务逻辑优化，操作读写方式优化。2. 单体应用JVM优化
->
-> [CMS 垃圾回收机制](https://www.cnblogs.com/Leo_wl/p/5393300.html)
+## SimpleDateFormate 线程不安全
 
-### 案例一 Major GC和Minor GC频繁
+多个线程之间共享变量calendar，并修改calendar。因此在多线程环境下，当多个线程同时使用相同的SimpleDateFormat对象（如static修饰）的话，如调用format方法时，多个线程会同时调用calender.setTime方法，导致time被别的线程修改，因此线程是不安全的。此外，parse方法也是线程不安全的，parse方法实际调用的是CalenderBuilder的establish来进行解析，其方法中主要步骤不是原子操作。
 
-> [美团GC优化参考](https://tech.meituan.com/2017/12/29/jvm-optimize.html)
+解决方案：1、将SimpleDateFormat定义成局部变量。2、 加一把线程同步锁：synchronized(lock)。3、使用ThreadLocal，每个线程都拥有自己的SimpleDateFormat对象副本。4、使用DateTimeFormatter代替SimpleDateFormat。 5、使用JDK8全新的日期和时间API
 
-**动态年龄计算**：Hotspot遍历所有对象时，按照年龄从小到大对其所占用的大小进行累积，当累积的某个年龄大小超过了survivor区的一半时，取这个年龄和MaxTenuringThreshold中更小的一个值，作为新的晋升年龄阈值。在本案例中，调优前：Survivor区 = 64M，desired survivor = 32M，此时Survivor区中age<=2的对象累计大小为41M，41M大于32M，所以晋升年龄阈值被设置为2，下次Minor GC时将年龄超过2的对象被晋升到老年代。
+## JDK 8 中的日期LocalDateTime, LocalDate, LocalTime.
 
-下图展示了CMS各个阶段可以标记的对象，用不同颜色区分。 <br>1. Init-mark初始标记(STW) ，该阶段进行可达性分析，标记GC ROOT能直接关联到的对象，所以很快。<br> 2. Concurrent-mark并发标记，由前阶段标记过的绿色对象出发，所有可到达的对象都在本阶段中标记。 <br>3. Remark重标记(STW) ，暂停所有用户线程，重新扫描堆中的对象，进行可达性分析，标记活着的对象。因为并发标记阶段是和用户线程并发执行的过程，所以该过程中可能有用户线程修改某些活跃对象的字段，指向了一个未标记过的对象，如下图中红色对象在并发标记开始时不可达，但是并行期间引用发生变化，变为对象可达，这个阶段需要重新标记出此类对象，防止在下一阶段被清理掉，这个过程也是需要STW的。特别需要注意一点，这个阶段是以新生代中对象为根来判断对象是否存活的。 <br>4. 并发清理，进行并发的垃圾清理。
+> [LocalDateTime, LocalDate, LocalTime 关系](https://cloud.tencent.com/developer/article/1598040)
 
-![img](https://raw.githubusercontent.com/xiaoluxiang/picCollect/main/workDesign/img/09cf176b.png)
+Export:<br>	LocalDateTime -> LocalDate/LocalTime. toLocalTime/toLocalDate.<br>	LocalDate/LocalTime -> LocalDateTime. of/at.
 
-新生代对象持有老年代中对象的引用，这种情况称为**“跨代引用”**。因它的存在，Remark阶段必须扫描整个堆来判断对象是否存活，
+Reset:<br>	plus/plusXXXX:增加<br>	minus/minusXXXX:减少<br>	with/withXXXX:直接设置 
+
+格式化:<br>	DateTimeFormatter:<br>		固定枚举:DateTimeFormatter.ISO_LOCAL_DATE<br>		自定义格式类型:DateTimeFormatter.ofPattern();<br>	Format: LocalDateTime.format(DateTimeFormatter);<br>	Parse:LocalDateTime.parse("",DateTimeFormatter);
+
+​	
+
+
+

@@ -70,6 +70,32 @@
 
 # 线程池
 
-1. 创建
-2. 特点
-3. 使用
+## 源码部分
+
+Executor->ExecutorService->AbstractExecutorService->ThreadPoolExecutor
+
+执行者->功能丰富的执行者->抽象的初步的具有一定功能的执行者->线程池版的执行者
+
+## Java中的线程池
+
+> ctl是一个Integer值，它是对线程池运行状态和线程池中有效线程数量进行控制的字段.**Integer值一共有32位，其中高3位表示”线程池状态”，低29位表示”线程池中的任务数量”**
+
+### 基本信息
+
+1. 在最后即线程池满，线程满了，任务队列也满了的时候，采取拒绝策略前，还是要判断下线程池内所有的线程状态是否全部在工作中，如果全部工作中，那么再采用拒绝策略<br>![image-20220929220136720](https://raw.githubusercontent.com/xiaoluxiang/picCollect/main/workDesign/img/image-20220929220136720.png)
+2. 什么时候创建多于corePoolSize呢，在任务队列满了之后，maximumPoolSize允许创建多余的线程，即会创建多余线程。
+3. Java的线程既是工作单元，也是执行机制。从JDK 5开始，把工作单元与执行机制分离开 来。工作单元包括Runnable和Callable，而执行机制由Executor框架提供。换句话说，任务执行和任务调度的分离
+
+### CacheThreadPoolExecutor
+
+1. SynchronousQueue在cacheThreadPool中使用其实还是很精巧的。`SynchronousQueue`队列的插入必须等待队列为空或者前一次poll操作完成。是同步阻塞的。但是cacheThreadPool可以拥有INTERGER.MAX_VALUE。线程允许缓存60s，还真是挺符合Cache这个定义的。缓存是有有效期的。
+
+### scheduledThreadPoolExecutor
+
+1. 作为定时执行类线程池，处理周期性任务`ScheduledFutureTask`。开发者往队列里面加任务，线程自动取，然后执行任务，再修改任务时间信息，扔回任务队列。
+2. condition中所有的线程都是在等待中，如果当前加入`ScheduledFutureTask`是被插入到头节点中，则会唤醒所有condition中的线程进行新一次的判断,<br>唤醒所有线程后是不是所有线程都需要进行一次判断，功能上是不是存在重复呢？
+
+# Atomic类
+
+> CAS算法是由硬件直接支持来保证原子性的，有三个操作数：**内存位置V、旧的预期值A和新值B，当且仅当V符合预期值A时，CAS用新值B原子化地更新V的值，否则，它什么都不做。**CAS也并不完美，它存在"ABA"问题，CAS只关注了比较前后的值是否改变，而无法清楚在此过程中变量的变更明细，这就是所谓的ABA漏洞。 
+

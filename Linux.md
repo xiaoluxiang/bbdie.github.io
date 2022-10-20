@@ -20,6 +20,18 @@ Linux
 
 
 
+# cat
+
+
+
+# ps
+
+
+
+# jmap
+
+
+
 
 
 
