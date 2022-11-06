@@ -83,3 +83,58 @@ jmap -histo:live pidValue
 
 新生代对象持有老年代中对象的引用，这种情况称为**“跨代引用”**。因它的存在，Remark阶段必须扫描整个堆来判断对象是否存活，
 
+# 深入理解Java虚拟机
+
+## 第X章 Java内存布局
+
+内存布局发展概览
+
+> 参考[地址](https://www.cnblogs.com/better-farther-world2099/articles/13889075.html)
+
+<img src = 'https://raw.githubusercontent.com/xiaoluxiang/picCollect/main/workDesign/img/v2-36899d1d42f4c9ff395181b3dd1e2233_r.jpg' height = 450px>
+
+<img src = 'https://raw.githubusercontent.com/xiaoluxiang/picCollect/main/workDesign/img/v2-7fd50080cbaf8e581104cadabe1b2023_r.jpg' height = 400px>
+
+<img src = 'https://raw.githubusercontent.com/xiaoluxiang/picCollect/main/workDesign/img/v2-7104247fc099753760cd68e4df6ee862_r.jpg' height = 370px>
+
+JDK 6-8经历了取消永久代的过程，也就是永久代被取消，其中静态变量和字符串常量池被移到堆上。其余脱离JVM内存，放到本地内存上。
+
+## 第七章 虚拟机类加载机制
+
+> 虚拟机如何加载这些Class文件，Class文件中的信息加载到虚拟机中会发生哪些变化
+
+### 类加载的时机
+
+#### 类加载的时机
+
+> 类和接口基本相似，即类和接口都有\<clinit>，初始化接口中的成员变量。但是接口的初始化不会触发父接口的初始化。不可以使用静态代码块。
+
+加载->验证->准备->解析->初始化->使用->卸载
+
+1. 验证->准备->解析统称为连接
+2. 加载，验证，准备，初始化，卸载。按顺序开始，解析具体开始时间可自由发挥，是为了支持动态绑定。
+3. 初始化的时机。主动引用必须初始化。被动引用，自由发挥。
+   - new，getstatic，putstatic，invokestatic，这四种字节码必须初始化。new -> 1. new。2. 父类。3. reflect。
+
+4. 初始化的时机。被动引用
+   - 子类引用父类静态字段不会触发子类初始化
+   - 通过数组引用类，不会触发类的初始化
+   - 静态常量的使用，不会触发该类的初始化
+
+#### 类加载的过程
+
+过程简述
+
+1. 通过类的全限定名获取类的二进制数据流
+2. 将数据流所代表的静态存储接口转为方法区的运行时数据结构
+3. 在内存中生成其类型的Class对象。作为方法去该类的数据访问入口
+
+其他
+
+1. 类的二进制数据流获取可供程序员自定义。
+2. 数组类的创建是虚拟机在内存中动态构建出来的。
+
+
+
+
+

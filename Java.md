@@ -1,8 +1,18 @@
-# 1.Java
+# Java Lang
 
-[***内部类***](https://www.cnblogs.com/GrimMjx/p/10105626.html#_label2_1)
+## 内部类
 
-​	非静态内部类：其实例不可单独存在，通过外部类的所持有其构造方法进行创建。该方法是否有该名字的成员变量 - 直接用该变量名，内部类中是否有该名字的成员变量 - 使用this.变量名。外部类中是否有该名字的成员变量 - 使用外部类的类名.this.变量名<br>	静态内部类不会持有外部类的对象，只是借壳，变量访问规则参考静态变量。
+> 参考地址：https://www.cnblogs.com/GrimMjx/p/10105626.html#_label2_1
+
+​	非静态内部类：其实例不可单独存在，不可含有静态方法。通过外部类的所持有其构造方法进行创建。<br>该方法是否有该名字的成员变量 - 直接用该变量名，<br>内部类中是否有该名字的成员变量 - 使用this.变量名。<br>外部类中是否有该名字的成员变量 - 使用外部类的类名.this.变量名<br>	静态内部类不会持有外部类的对象，只是借壳，变量访问规则参考静态变量。
+
+## Switch
+
+Switch基本用法。略。可接受对象会有很多，
+
+switch 对于不同case，会有break用法。没有break会一直匹配下去。
+
+不要忘记default:
 
 # 2. 代理
 
@@ -206,8 +216,6 @@ Export:<br>	LocalDateTime -> LocalDate/LocalTime. toLocalTime/toLocalDate.<br>	L
 Reset:<br>	plus/plusXXXX:增加<br>	minus/minusXXXX:减少<br>	with/withXXXX:直接设置 
 
 格式化:<br>	DateTimeFormatter:<br>		固定枚举:DateTimeFormatter.ISO_LOCAL_DATE<br>		自定义格式类型:DateTimeFormatter.ofPattern();<br>	Format: LocalDateTime.format(DateTimeFormatter);<br>	Parse:LocalDateTime.parse("",DateTimeFormatter);
-
-​	
 
 
 

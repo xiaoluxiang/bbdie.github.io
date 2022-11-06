@@ -2,13 +2,18 @@
 
 > 遇到一个有趣的问题，如果一个线程拿到另一个线程B的锁，然后把调用B的wait()方法，B被加入到等待队列中，谁会把B拿到同步队列中。
 
-1. [***内存屏障***](https://www.zhihu.com/question/325469611/answer/1650954047)：<br>LoadLoad Barriers <br>示例：Load1; LoadLoad; Load2 <br>该屏障确保Load1数据的装载先于Load2及其后所有装载指令的的操作 <br>StoreStore Barriers <br>示例：Store1; StoreStore; Store2 <br>该屏障确保Store1立刻刷新数据到内存(使其对其他处理器可见)的操作先于Store2及其后所有存储指令的操作 <br>LoadStore Barriers <br>示例：Load1; LoadStore; Store2 <br>确保Load1的数据装载先于Store2及其后所有的存储指令刷新数据到内存的操作 <br>StoreLoad Barriers <br>示例：Store1; StoreLoad; Load2 <br>该屏障确保Store1立刻刷新数据到内存的操作先于Load2及其后所有装载装载指令的操作。它会使该屏障之前的所有内存访问指令(存储指令和访问指令)完成之后,才执行该屏障之后的内存访问指令。
+## Java内存模型中的术语
 
-2. ***[数据依赖性 as-if-serial语义](https://blog.csdn.net/cold___play/article/details/104031253)***: <br>编译器和处理器可能会对操作做重排序。编译器和处理器在重排序时，会遵守数据依赖性，编译器和处理器不会改变存在数据依赖关系的两个操作的执行顺序。<br>这里所说的数据依赖性仅针对单个处理器中执行的指令序列和单个线程中执行的操作，不同处理器之间和不同线程之间的数据依赖性不被编译器和处理器考虑。<br>as-if-serial语义
-   as-if-serial语义的意思是：不管怎么重排序（编译器和处理器为了提高并行度），（单线程）
+1. [***内存屏障***](https://www.zhihu.com/question/325469611/answer/1650954047)：
 
-3. ***[as-if-serial规则和happens-before规则](https://xmmarlowe.github.io/2021/04/28/%E5%B9%B6%E5%8F%91/as-if-serial%E8%A7%84%E5%88%99%E5%92%8Chappens-before%E8%A7%84%E5%88%99/)***<br>*as-if-serial*语义的意思指：**不管怎么重排序（编译器和处理器为了提高并行度），（单线程）程序的执行结果不能被改变。** 编译器、runtime和处理器都必须遵守as-if-serial语义。
-   为了遵守as-if-serial语义，**编译器和处理器不会对存在数据依赖关系的操作做重排序，因为这种重排序会改变执行结果**<br><br>*happens-before（先行发生）*规则:JMM可以通过happens-before关系向程序员提供跨线程的内存可见性保证（如果A线程的写操作a与B线程的读操作b之间存在happens-before关系，尽管a操作和b操作在不同的线程中执行，但JMM向程序员保证a操作将对b操作可见）。具体的定义为：
+   LoadLoad Barriers <br>示例：Load1; LoadLoad; Load2 <br>该屏障确保Load1数据的装载先于Load2及其后所有装载指令的的操作 <br>StoreStore Barriers <br>示例：Store1; StoreStore; Store2 <br>该屏障确保Store1立刻刷新数据到内存(使其对其他处理器可见)的操作先于Store2及其后所有存储指令的操作 <br>LoadStore Barriers <br>示例：Load1; LoadStore; Store2 <br>确保Load1的数据装载先于Store2及其后所有的存储指令刷新数据到内存的操作 <br>StoreLoad Barriers <br>示例：Store1; StoreLoad; Load2 <br>该屏障确保Store1立刻刷新数据到内存的操作先于Load2及其后所有装载装载指令的操作。它会使该屏障之前的所有内存访问指令(存储指令和访问指令)完成之后,才执行该屏障之后的内存访问指令。
+
+2. ***[数据依赖性 as-if-serial语义](https://blog.csdn.net/cold___play/article/details/104031253)***: <br>as-if-serial语义
+   as-if-serial语义的意思是：不管怎么重排序（编译器和处理器为了提高并行度），（单线程）程序的执行结果不能被改变
+
+   编译器和处理器可能会对操作做重排序。编译器和处理器在重排序时，会遵守数据依赖性，编译器和处理器不会改变存在数据依赖关系的两个操作的执行顺序。<br>这里所说的数据依赖性仅针对单个处理器中执行的指令序列和单个线程中执行的操作，不同处理器之间和不同线程之间的数据依赖性不被编译器和处理器考虑。<br>
+
+3. ***[as-if-serial规则和happens-before规则](https://xmmarlowe.github.io/2021/04/28/%E5%B9%B6%E5%8F%91/as-if-serial%E8%A7%84%E5%88%99%E5%92%8Chappens-before%E8%A7%84%E5%88%99/)***<br>*as-if-serial*语义的意思指：**不管怎么重排序（编译器和处理器为了提高并行度），（单线程）程序的执行结果不能被改变。** 编译器、runtime和处理器都必须遵守as-if-serial语义。为了遵守as-if-serial语义，**编译器和处理器不会对存在数据依赖关系的操作做重排序，因为这种重排序会改变执行结果**<br><br>*happens-before（先行发生）*规则:JMM可以通过happens-before关系向程序员提供跨线程的内存可见性保证（如果A线程的写操作a与B线程的读操作b之间存在happens-before关系，尽管a操作和b操作在不同的线程中执行，但JMM向程序员保证a操作将对b操作可见）。具体的定义为：
 
    1. **如果一个操作happens-before另一个操作，那么第一个操作的执行结果将对第二个操作可见，而且第一个操作的执行顺序排在第二个操作之前。**
    2. 两个操作之间存在happens-before关系，并不意味着Java平台的具体实现必须要按照happens-before关系指定的顺序来执行。**如果重排序之后的执行结果，与按happens-before关系来执行的结果一致，那么JMM允许这种重排序。**
@@ -17,42 +22,101 @@
       as-if-serial语义给编写单线程程序的程序员创造了一个幻觉：单线程程序是按程序的顺序来执行的。happens-before关系给编写正确同步的多线程程序的程序员创造了一个幻觉：正确同步的多线程程序是按happens-before指定的顺序来执行的。
       as-if-serial语义和happens-before这么做的目的，都是为了在不改变程序执行结果的前提下，尽可能地提高程序执行的并行度。
 
-4. <font color = "blue">Object.join()部分源码:</font>
+## CPU实现中的术语
 
-   ```java
-   public class Thread implements Runnable {
-       ...
-       public final void join() throws InterruptedException {
-           join(0);
-       }
-       ...
-       public final synchronized void join(long millis) throws InterruptedException {
-           long base = System.currentTimeMillis();
-           long now = 0;
-           if (millis < 0) {
-               throw new IllegalArgumentException("timeout value is negative");
-           }
-           if (millis == 0) { //判断是否携带阻塞的超时时间，等于0表示没有设置超时时间
-               while (isAlive()) {//isAlive获取线程状态，无线等待直到previousThread线程结束
-                   wait(0); //调用Object中的wait方法实现线程的阻塞
-               }
-           } else { //阻塞直到超时
-               while (isAlive()) { 
-                   long delay = millis - now;
-                   if (delay <= 0) {
-                       break;
-                   }
-                   wait(delay);
-                   now = System.currentTimeMillis() - base;
-               }
-           }
-       }
-       ...
-   ```
+	1. 基础术语![image-20221106134257124](https://raw.githubusercontent.com/xiaoluxiang/picCollect/main/workDesign/img/image-20221106134257124.png)
+	1. 原子操作![image-20221106173756054](https://raw.githubusercontent.com/xiaoluxiang/picCollect/main/workDesign/img/image-20221106173756054.png)对于被处理器缓存的缓存行内容，如果在Lock期间被锁定，回写内存时，不必声明Lock#信号，直接修改内部地址。通过缓存一致性协议禁止其他处理器的修改。对于无法缓存活着缓存内容超过缓存行单位长度，则无法使用缓存锁定。
 
-   Q: 问题在于谁拿到该对象，A线程中，使用B.join()方法，A是获取到B是否存活，存活则弃锁继续等待wait()，否则返回结束。
+## Java语言中的术语
 
-5. ***[ThreadLocal](https://www.liaoxuefeng.com/wiki/1252599548343744/1306581251653666)***:<br>它可以在一个线程中传递同一个对象，实际上，可以把`ThreadLocal`看成一个全局`Map<Thread, Object>`：每个线程获取`ThreadLocal`变量时，总是使用`Thread`自身作为key：
+1. ### <font color = 'blue'> volatile</font>
+
+   ***含义***：在多处理器开发中保证了共享变量的可见性。（可见性即确保所有线程看到的变量的值是一致的）
+
+   ***实现***：JVM会向处理器发出lock指令（锁总线，可导致访问任何共享内存，现处理器不一定锁总线），指令导致将本缓存行的数据写回系统内存，并使其他处理器对该内存地址的数据无效（对于这个其他处理器的数据无效。是因为各处理器间使用缓存一致性协议，通过嗅探总线上的数据来检查自己缓存的数据是否失效，并且也会阻止俩个及以上的处理器同时修改同一内存地址的数据）
+
+   ***优点***：相较于synchronized，更为轻量。且不会引发上下文切换和调度
+
+   ***缺点**：
+
+   - 当单个对象不足机器的缓存行并且放到同一缓存行，会导致伪共享的现象。可使用填充字节的方式（可能会被JDK优化以致方法失效）
+
+   ***使用场景*：
+
+2. ### <font color = 'blue' >synchronized</font>
+
+   ***含义***：Java中每一个对象（对象头）都可以当作锁，对于普通方法，锁的是实例对象，对于静态方法锁的是类对象，对于代码块锁的是指定的对象。执行代码过程前需获得锁，正常或异常退出需要释放锁。
+
+   ***实现***：
+
+   - 代码块同步是使用了monitorenter和monitorexit指令实现的。方法同步JVM未作详细说明。（任何对象都持有monitor对象，指令或尝试获取与释放monitor对象）
+
+   - 数据结构
+
+     ynchronized使用的锁是在对象头中实现的。数组类型使用三个字长。非数组类型使用俩个字长![image-20221106141443140](https://raw.githubusercontent.com/xiaoluxiang/picCollect/main/workDesign/img/image-20221106141443140.png)
+
+     Mark Word组成![image-20221106141546701](https://raw.githubusercontent.com/xiaoluxiang/picCollect/main/workDesign/img/image-20221106141546701.png)Mark Word的变化情况![image-20221106141616902](https://raw.githubusercontent.com/xiaoluxiang/picCollect/main/workDesign/img/image-20221106141616902.png)64位下的Mark Word ![](https://raw.githubusercontent.com/xiaoluxiang/picCollect/main/workDesign/img/image-20221106141645223.png)
+
+   - 数据操作
+
+     偏向锁是一种乐观锁，锁的状态位同无锁，都是01，考虑大部分情况下都是单一线程重复获取与释放锁，所以在锁对象的markword记录偏向线程号。如果不是我，则看锁标志位，是则cas竞争锁，不是则cas使偏向锁指向自己。<br>偏向锁的撤销：发生竞争后才会主动撤销，并且等到全局安全点。先看该线程是否活着，活着先执行，等待的CAS，CAS不成功则去撤销偏向锁。进行锁的升级。
+
+     轻量锁是一种乐观锁，线程先在自己的栈空间中创建用于存储锁记录的空间，并将markword信息复制过来。然后反向替换Mark Word为该空间的指针。反向替换失败则尝试自旋。自旋失败，则升级为重量级锁，自己陷入阻塞。<br>轻量级锁的撤销：将markword的信息替换回去，失败的膨胀成重量级锁。然后解锁需要唤起阻塞线程
+
+   ***优缺点***：![image-20221106174703143](https://raw.githubusercontent.com/xiaoluxiang/picCollect/main/workDesign/img/image-20221106174703143.png)
+
+   ***使用场景***：
+
+3. ### <font color ='blue'>原子操作</font>
+
+   ***含义***：不可中断的一系列操作。
+
+   ***实现***：通过锁和CAS实现
+
+   - CAS通过处理器的CMPXCHG。从Java 1.5开始，JDK的并发包里提供了一些类来支持原子操作，如AtomicBoolean(用原子 方式更新的boolean值)、AtomicInteger(用原子方式更新的int值)和AtomicLong(用原子方式更 新的long值)。这些原子包装类还提供了有用的工具方法，比如以原子的方式将当前值自增1和 自减1
+   - 利用锁机制实现院子操作，锁机制确保了只有获得锁的线程才能操作锁定的内存区域。除了偏向锁，JVM实现锁的方式都用了循环 CAS，即当一个线程想进入同步块的时候使用循环CAS的方式来获取锁，当它退出同步块的时 候使用循环CAS释放锁。
+
+   ***优缺点***：
+
+   - CAS
+
+     ABA的问题，可以通过在变量里增加单调版本号来实现<br>自旋时间长消耗大<br>只能保证一个共享变量的原子操作。对多个共享变量操作时，循环CAS就无法保证操作的原子 性，这个时候就可以用锁。有一个取巧的办法，就是把多个共享变量合并成一个共享变量来 操作
+
+4. ### <font color = "blue">Object.join()部分源码:</font>
+```java
+public class Thread implements Runnable {
+    ...
+    public final void join() throws InterruptedException {
+        join(0);
+    }
+    ...
+    public final synchronized void join(long millis) throws InterruptedException {
+        long base = System.currentTimeMillis();
+        long now = 0;
+        if (millis < 0) {
+            throw new IllegalArgumentException("timeout value is negative");
+        }
+        if (millis == 0) { //判断是否携带阻塞的超时时间，等于0表示没有设置超时时间
+            while (isAlive()) {//isAlive获取线程状态，无线等待直到previousThread线程结束
+                wait(0); //调用Object中的wait方法实现线程的阻塞
+            }
+        } else { //阻塞直到超时
+            while (isAlive()) { 
+                long delay = millis - now;
+                if (delay <= 0) {
+                    break;
+                }
+                wait(delay);
+                now = System.currentTimeMillis() - base;
+            }
+        }
+    }
+    ...
+```
+
+Q: 问题在于谁拿到该对象，A线程中，使用B.join()方法，A是获取到B是否存活，存活则弃锁继续等待wait()，否则返回结束。
+
+4. ***[ThreadLocal](https://www.liaoxuefeng.com/wiki/1252599548343744/1306581251653666)***:<br>它可以在一个线程中传递同一个对象，实际上，可以把`ThreadLocal`看成一个全局`Map<Thread, Object>`：每个线程获取`ThreadLocal`变量时，总是使用`Thread`自身作为key：
 
    ```java
    Object threadLocalValue = threadLocalMap.get(Thread.currentThread());
@@ -62,11 +126,33 @@
 
    最后，特别注意`ThreadLocal`一定要在`finally`中清除：
 
-6. ***超时等待模式***：<br>超时等待模式是一种线程间通讯的方式，等待可能是其他线程处理的过程信息，这种可以通过volae变量值方式进行超时判断。等待的是其他线程的运行状态则可以通过Thread#join方法。详情可以看到
+5. ***超时等待模式***：<br>超时等待模式是一种线程间通讯的方式，等待可能是其他线程处理的过程信息，这种可以通过volae变量值方式进行超时判断。等待的是其他线程的运行状态则可以通过Thread#join方法。详情可以看到
 
-7. ***<font color = "red">线程池</font>***<br>线程池的本质就是使用了一个线程安全的工作队列连接工作者线程和客户端 线程，客户端线程将任务放入工作队列后便返回，而工作者线程则不断地从工作队列上取出 工作并执行。当工作队列为空时，所有的工作者线程均等待在工作队列上，当有客户端提交了 一个任务之后会通知任意一个工作者线程，随着大量的任务被提交，更多的工作者线程会被 唤醒。
+6. ***<font color = "red">线程池</font>***<br>线程池的本质就是使用了一个线程安全的工作队列连接工作者线程和客户端 线程，客户端线程将任务放入工作队列后便返回，而工作者线程则不断地从工作队列上取出 工作并执行。当工作队列为空时，所有的工作者线程均等待在工作队列上，当有客户端提交了 一个任务之后会通知任意一个工作者线程，随着大量的任务被提交，更多的工作者线程会被 唤醒。
 
+# Java内存模型
 
+> 多线程，解决的事控制不同线程操作相对顺序。即不同线程的同步问题。大体上有俩种方式，即共享内存模型和消息传递。Java采用的是共享内存模型。所以不同线程通讯是隐形的。故对于程序员来说，这个过程是透明的
+>
+> Java内存模型是对栈空间与堆空间的抽象。是概念模型。共享的是整个堆内存的数据。通过堆空间即主内存实现跨线程隐形控制交互与同步
+
+1. 重拍序现象
+
+   ***发生原因***：在编译器编译，cpu指令执行，硬件IO操作环节。优化程序性能发生重排序现象。
+
+   ***发生场景***：
+
+   - 编译器优化的重排序，编译器有编译重排序规则禁止非法重排序
+   - 指令并行的重排序，编译器通过在特定操作位置插入内存屏障禁止非法重排序
+   - 内存系统的重排序。无。
+
+   ***发生影响***：
+
+2. happens-before
+
+   - 含义：一个操作按顺序排在另一个操作的前面，并且第一个操作的结果对第二个操作可见。不要求前一个操作必须在后一个操作前执行。即顺序和执行过程与执行结果的关系。
+   - 如果前一个操作的结果需要对其他操作可见，那么他们需要有happens-before关系。
+   - happens-before 是一种折中，要求程序员按逻辑顺序写。要求程序执行满足逻辑结果。win-win
 
 # 线程池
 
