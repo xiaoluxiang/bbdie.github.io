@@ -1,10 +1,48 @@
-# Mysql语法
+# MySQL数据类型
+
+## 整数
+
+tinyint,smallint,middleint,int,bigint；占用的字节数分别为4，8，16，32，64。对于int(10)，对于实际存储占用没有效果，只是为了交互显示所用。
+
+## 浮点数
+
+float(),double(),decimal()；可以指定列宽。即double(10,5)。不含小数点。
+
+## 字符串
+
+varchar()，char()。
+
+varchar允许可变长存储，去除末尾空格。
+
+char不允许超长，会保留末尾空格。
+
+## 日期
+
+datetime，timestamp。
+
+datetime使用8字节存储，单位为秒。存储范围1001-9999。与时区无关。
+
+timestamp使用4字节存储，单位为秒。存储范围1970-2038。与时区有关，能自动转换
+
+## 大文本
+
+blob，text。
+
+# 存储引擎
+
+## InnoDB
+
+> 聚簇索引，在索引中包含数据
+
+支持事务<br>支持在线热备份<br>支持行级锁<br>支持外键
+
+# MySQL语法
 
 ## alter
 
-- 数据库表字段的增删查改，[**Mysql修改字段名、修改字段类型**](https://blog.csdn.net/u010002184/article/details/79354136)
+- 数据库表字段的增删查改，[**MySQL修改字段名、修改字段类型**](https://blog.csdn.net/u010002184/article/details/79354136)
 
-## Mysql on duplicate key update
+## MySQL on duplicate key update
 
 > 参考[***博文***](https://www.cnblogs.com/better-farther-world2099/articles/11737376.html)
 
@@ -29,7 +67,7 @@ small squirrel good night
 
 
 
-# Mysql 锁
+# MySQL 锁
 
 > mysql 中对表中的数据操作四种：select, update, insert, delete。分为俩类：一是查询，二是更新。命令作用在数据库上就存在俩种读法：快照读和当前读。多个操作当被视作事务时，就会导致同一事务中快照读升级为当前读，进而导致幻读的发生
 
@@ -37,7 +75,7 @@ small squirrel good night
 
 1. 在非序列化过程中
 
-## Mysql MVCC&幻读
+## MySQL MVCC&幻读
 
 > [原文地址-Java码农](https://www.jianshu.com/p/b7c53ee0ed0e)
 
