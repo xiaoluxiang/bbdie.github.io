@@ -195,6 +195,14 @@ get：<br>1. 对于给定key的hashcode值定位数组位置，如果为null，�
 
 1. 函数式接口，通过接口实现匿名类，我们可以实现类的一些属性
 
+## 函数式编程
+
+函数式编程是一组动作的抽象。实现过程是通过Predicate, Function, BiFunction的预定义的组合，这些组合还是会返回同类型的对象，调用test或者apply方法。触发所有动作的执行。
+
+常见的函数式编程
+
+Arrays.sort(arrObj, Comparator.comparing(FuncutionWtihReturnComparableObj));
+
 # 7. NIO
 
 sockets是面向流的而非包导向的。它们可以保证发送的字节会按照顺序到达但无法承诺维持字节分组
