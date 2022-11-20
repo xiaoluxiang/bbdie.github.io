@@ -25,7 +25,19 @@ switch 对于不同case，会有break用法。没有break会一直匹配下去�
 
 
 
-# 3. BIO、NIO、AIO、IO多路复用、信号驱动IO
+# 3.IO 
+
+> 背景就是应用程序向操作系统发起不同调用请求。操作系统作出不同响应，进而实现将内核中数据拷贝到应用程序中
+>
+> IO的理解方式，可以在数据的传输方式和操作方式俩个维度。Java具体实现中是通过装饰者模式
+
+关于IO的基础定义
+
+> 阻塞与非阻塞、同步与非同步、Linux的IO模型
+
+## 网络IO的五种模型
+
+>  BIO、NIO、AIO、IO多路复用、信号驱动IO
 
 > 作者：云飞扬°
 > 链接：https://www.nowcoder.com/discuss/820703
@@ -61,6 +73,24 @@ switch 对于不同case，会有break用法。没有break会一直匹配下去�
 ***异步 IO 与信号驱动 IO***
 
  异步 I/O 与信号驱动 I/O 的区别在于，异步 I/O 的信号是通知应用进程 I/O 完成，而信号驱动 I/O 的信号是通知应用进程可以开始 I/O。
+
+## Java Reator 模型
+
+No
+
+## 零拷贝
+
+> 系统调用次数*2=上下文切换次数
+>
+> 文件读取分为DMA读取和CPU读取
+
+传统提供文件传输IO过程，是俩次（read、write）调用，四次上下文切换，四次拷贝（DMA2，CPU2）
+
+mmap+write传输文件过程，是俩次（mmap、write）调用，四次上下文切换，三次拷贝（DMA2，CPU1）
+
+sendfile传输文件过程，是一次（sendfile）调用，俩次上下文切换，三次拷贝（DMA2，CPU1）
+
+sendfile+网卡支持 SG-DMA，是一次（sendfile）调用，俩次上下文切换，俩次拷贝（DMA）
 
 # 4. HashMap
 
