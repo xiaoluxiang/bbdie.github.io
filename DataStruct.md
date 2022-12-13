@@ -42,7 +42,7 @@ Frolyd，基于邻接矩阵，逐个将所有的点纳入中介点，进行更�
 
 > 冒泡->选择->插入->快排->归并->希尔->堆排序->桶->基数
 
-![img](https://pdai-1257820000.cos.ap-beijing.myqcloud.com/pdai.tech/public/_images/alg/alg-sort-overview-1.png)
+![img](https://raw.githubusercontent.com/xiaoluxiang/picCollect/main/workDesign/img/alg-sort-overview-1.png)
 
 ## 冒泡排序
 

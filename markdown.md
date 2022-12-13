@@ -71,3 +71,32 @@ $ x \div y =z $
 
 
 
+
+
+# 类图
+
+> [参考地址：30分钟学会UML类图](https://zhuanlan.zhihu.com/p/109655171)
+
+**属性**
+
+public +
+
+protect #
+
+private -
+
+default default
+
+**方法**
+
++/-/# MethodName(XX) ReturnType
+
+抽象类使用斜体，类使用常规体，接口标明\<interface>
+
+![image-20221212171920326](https://raw.githubusercontent.com/xiaoluxiang/picCollect/main/workDesign/img/image-20221212171920326.png)
+
+包的表示
+
+关系的表示
+
+![image-20221212172116728](https://raw.githubusercontent.com/xiaoluxiang/picCollect/main/workDesign/img/image-20221212172116728.png)

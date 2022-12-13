@@ -49,4 +49,17 @@ slf4j已经成为了Java日志组件的明星选手，可以完美替代JCL，�
 
 
 
-# Spring
+# RPC
+
+***RPC (remote process call) 远程过程调用***
+
+1. 双方持有相同接口，调用方通过本地JDK代理实现提供实现类
+2. 本地实现类通过对象序列化，将执行参数值，参数属性，接口，方法传递给远程服务线程上（传递方式，socket，http，很多自定义协议都可）
+3. 远程服务线程反序列化，拿到对象，然后执行方法。对返回值进行序列化，传回给调用方
+4. 本地代理对象拿到返回，反序列化，返回完成。
+
+![img](https://raw.githubusercontent.com/xiaoluxiang/picCollect/main/workDesign/img/v2-54c36e07764895d3da67c7fc624789c5_720w.jpg)
+
+![img](https://raw.githubusercontent.com/xiaoluxiang/picCollect/main/workDesign/img/v2-d690accc669d726fe122d6da6caa75a1_720w.jpg)
+
+![img](https://raw.githubusercontent.com/xiaoluxiang/picCollect/main/workDesign/img/v2-c0088ff8964a97f232081b5b2a08c068_720w.png)

@@ -234,3 +234,46 @@ SqlSessionFactoryBuilder->SqlSessionFactory->session->getMapper()->Method->sessi
 # IO多路复用
 
 ![image-20220424105904103](https://raw.githubusercontent.com/xiaoluxiang/picCollect/main/workDesign/img/image-20220424105904103.png)
+
+
+
+Spring Boot自动配置的原理
+
+Spring Boot启动会通过扫描注解，其中EnableAutoConfigruation会自动去Maven中的各个start下的spring.factories文件。这些文件中写明了各start所需注入的bean
+
+@SpringBootApplication注解包含@SpringBootConfiguration，@EnableConfiguration，@ComponentScan
+
+@ComponentScan注解是有点意思的，value（basePackages）分析注解即为接口，默认实现与默认返回，以便深入理解注解工作原理
+
+
+
+Java的spi服务发现机制：resources/META_INFO.services/FullInterfaceName。文件里存放所有的实现类的全限定名称
+
+SpringBoot的自动加载机制：通过启动类上@EnableAutoConfiguration注解配置，自动加载Maven中所有starter下的spring.factories文件内容
+
+
+
+spring 配置文件种类&配置文件优先级
+
+> [参考文章](https://juejin.cn/post/7113920258016018439)
+
+```txt
+命令行参数
+JVM系统参数
+系统环境参数
+jar包外部application-{profile}.properties/yml
+jar包内部的application-{profile}.properties/yml
+jar包外部的application.properties/yml
+
+项目根目录下的/config目录下的配置文件。
+项目根目录下的配置文件。
+项目类路径（resources）下的/config目录下的配置文件。
+项目类路径（resources）下的配置文件。
+
+项目根目录下的配置文件或者/config目录下的配置文件在打包的时候不会被打入jar包中，因此一般很少用到
+
+bootstrap配置文件由spring父上下文加载，并且比application配置文件优先加载（父上下文不会使用application配置文件），而application配置文件由子上下文加载。bootstrap加载的配置信息不能被application的相同配置覆盖。
+
+但是注意，如果要使用配置文件中的变量，那么同名变量将使用application文件中的配置，因为在Environment中，application配置文件的propertySource排在bootstrap配置文件的propertySource之前，Spring 在进行属性注入、获取时，将会顺序遍历所有的propertySource查找属性，如果找到了就直接返回。.peoperties文件比.yaml文件的属性查找优先级更高的原理一样。
+```
+
