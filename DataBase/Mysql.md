@@ -250,6 +250,31 @@ redo log
 
 - 数据库表字段的增删查改，[**MySQL修改字段名、修改字段类型**](https://blog.csdn.net/u010002184/article/details/79354136)
 
+```mysql
+-- MySQL 常规语法
+
+--show 
+show variable like '';
+show status like '';
+show create table tableName;
+
+-- select 
+select XX from where XX order by XX
+
+-- update
+
+-- alter 记忆顺序，表->索引->字段增改删-> 
+alter table XX rename to newTableName;
+alter table XX add Index indexName(lineName);
+alter table XX add column columnName...;
+alter table XX add column columnName... before/after columnName;
+alter table XX modify column columnName ...;
+alter table XX change column oldColumnName newColunmName...;
+alter table XX drop column columnName;
+```
+
+
+
 ## MySQL on duplicate key update
 
 > 参考[***博文***](https://www.cnblogs.com/better-farther-world2099/articles/11737376.html)
@@ -298,4 +323,24 @@ MVCC是分为当前读和快照读<br>**针对快照读**（普通 select 语句
 要避免这类特殊场景下发生幻读的现象的话，就是尽量在开启事务之后，马上执行 select ... for update 这类当前读的语句，因为它会对记录加 next-key lock，从而避免其他事务插入一条新记录。
 
 
+
+马老师，和您同步一下催收信创的进度
+
+1. 催收的管理台的功能（即不包括每日批量，一键扣款API接口）已完成迁移，自主测试已完成并通过。
+
+2. 催收预计三月份实现生产环境双轨运行，今日信创开会，接下来会进行压测和安全测试。
+
+3. 过程中遇到一些现象，即催收管理台的文件下载上传，没有经网关，故这部分流量只会负载刀原来的X86机器上，目前没有完成迁移。下面是涉及到的功能清单
+
+   功能/接口明细:
+
+   \1. 智催提醒池/逾期池/历史智催案件中的案件导出功能
+
+   \2. 逾期案件池/历史案件/停催案件的案件导出功能
+
+   \3. 委外池中案件的导入导出
+
+   \4. 委外文件推送及文件下载
+
+   \5. 佣金报表的导入与导出
 

@@ -95,21 +95,51 @@ String str3 = "lu"+"shixiang"; 会被编译器优化掉等效于str1
 
 String str4 =  "lu"+new String("shixiang"); 会被编译器优化成Stringbuilder相加，然后toString。重点在于StringBuilder的toString方法是复用堆上的，即传递数组char value[]来实现的
 
+### Java中对象的创建过程
+
+**对象创建**
+
+​	对象加载：
+
+​	对象内存分配，存在对象会被分配到线程私有栈上，通过分析逃逸算法，对于非方法逃逸的变量，会分配到栈上，随着栈的压入和弹出。
+
+**对象结构**
+
+​	内存结构
+
+​	结构值的变化
+
+​	内存地址移动：大对象的直接进入&对象动态年龄判断&老年代空间分配担保机制
+
+**对象访问**
+
+​	访问方式
+
+**对象销毁**
+
+​	销毁条件
+
+​	GC行为
+
 ## 第六章类文件结构
 
 Java技术能保持良好的向后兼容性，clas 文件结构稳定性功不可没。
 
 class文件是以八个字节为单位的二进制数据流（如何理解这句话），类似于C语言中的结构体，数据类型分为无符号数和表。无符号数u表示，其接数字表示字节长度。用来描述数字，索引，数量值或者字符串。表则为多个无符号数和其他表组成。
 
-魔数->版本号（4）主次版本，预览版次版本需为65535->
+**魔数->版本号（4）主次版本**，预览版次版本需为65535->
 
-常量池入口（资源仓库）位移计数器，从1开始，0留作后面指向常量时为不需要真指向即不需要引用任何常量池的内容。常量池主要存放了字面量和符号引用。符号引用即导入的包，类的全限定名称，字段名称描述符，方法的名称和描述符，方法句柄和方法类型。动态调用点和动态常量。在Javac编译的过程中，其实不是会描述字段方法真正的内存布局，而只是程序的格式整理。在运行时进行动态加载解析初始化。
+1. **常量池**入口（资源仓库）位移计数器，从1开始，0留作后面指向常量时为不需要真指向即不需要引用任何常量池的内容。常量池主要存放了字面量和符号引用。符号引用即导入的包，类的全限定名称，字段名称描述符，方法的名称和描述符，方法句柄和方法类型。动态调用点和动态常量。在Javac编译的过程中，其实不是会描述字段方法真正的内存布局，而只是程序的格式整理。在运行时进行动态加载解析初始化。
 
 > 程序是由字面量开始，符号引用操作，不同符号含义的确定即通过表的tag定义完成。
 
-常量池中每一项都是一个表。并且起始字段都为表类型。根据表中子字段含义及其值回溯拼凑自己表达内容。可以熟练掌握几个类型。CONSTANT_UTF8_INFO等。
+**常量池中每一项都是一个表**。并且起始字段都为表类型。根据表中子字段含义及其值回溯拼凑自己表达内容。可以熟练掌握几个类型。CONSTANT_UTF8_INFO等。
 
-CONSTANT_Fieldref_info，CONSTANT_Methodref_info，常量类型，标明自己属于哪个类，本身的NameAndType（CONSTANT_NameAndType_info）。其CONSTANT_NameAndType_info，常量类型，Name，Type（字段或者方法）。<br>CONSTANT_MethodHandle_info，常量类型，reference_kind(值范围为1-9，代表着基本数据类型和引用类型。Java语言是静态类型的（statical typed))，参考地址[Java数据类型总结：基本类型、引用类型](https://zhishui0501.github.io/Summary-of-Java-Data-Types。reference_index，值为对常量池的有效索引。<br>Q: CONSTANT_MethodHandle_info,CONSTAND_Method_type_info,CONSTAND_NameAndType_info。到底如何描述Method。除此之外，Dynamic和invokeDynamic
+CONSTANT_Fieldref_info，CONSTANT_Methodref_info，常量类型，标明自己属于哪个类，本身的NameAndType（CONSTANT_NameAndType_info）。其CONSTANT_NameAndType_info，常量类型，Name，Type（字段或者方法）。
+
+CONSTANT_MethodHandle_info，常量类型，reference_kind(值范围为1-9，代表着基本数据类型和引用类型。Java语言是静态类型的（statical typed))，参考地址[Java数据类型总结：基本类型、引用类型](https://zhishui0501.github.io/Summary-of-Java-Data-Types。reference_index，值为对常量池的有效索引。
+
+Q: CONSTANT_MethodHandle_info,CONSTAND_Method_type_info,CONSTAND_NameAndType_info。到底如何描述Method（MethodHandle 是对基础方法，构造函数，字段或类似的低级操作的类型化，直接可执行的引用，并带有自变量或返回值的可选转换）。除此之外，Dynamic和invokeDynamic
 
 **类的访问标志**：俩个字节，16个标志位，目前仅用了9个JDK9.主要是用来表示public static abstract，enum，annotation，module。
 
@@ -117,7 +147,7 @@ CONSTANT_Fieldref_info，CONSTANT_Methodref_info，常量类型，标明自己�
 
 **字段表集合**，字段可以用来修饰public static final volatile transient enum 编译器产生。上述这些固定表示范围+数据类型和名字非固定内容组成，即name_index和descriptior_index。插播**描述符的作用，即为字段的数据类型或方法的参数列表和返回值（先参数列表后返回值缩写符号）**。字段表不会显示父类的字段，对于内部类来说，编译器可能添加对外部类引用字段。在Class文件中，字段是允许重载的。
 
-**方法表**：这些都是定长表示，访问标志，name，描述符，属性表。
+**方法表**：这些都是定长表示，访问标志，name，描述符，属性表。插播方法特征签名Java指的是方法名称，参数顺序，参数类型。字节码指的还包括了方法返回值和受查异常表。
 
 ## 第七章 虚拟机类加载机制
 

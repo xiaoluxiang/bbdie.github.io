@@ -228,8 +228,26 @@ specification
 
 the attitudes towards this issue vary from person to person in this country
 
+he knocked down his opponent in the contest
+
+he tried to wear a calm smile to hide his inward panic 
+
 
 
 # Article
 
 after nearly two decades of a fickle and  somewhat financially impulsive approach to skincare, I decide to make a small commitment.
+
+
+
+| 组件名           | 产品名                                                       | 价格         | 浮动范围 |
+| ---------------- | ------------------------------------------------------------ | ------------ | -------- |
+| 处理器--√        | 12400                                                        | 1053         | 0        |
+| 主板--1609--√    | 铭瑄B660M                                                    | 669          | 70       |
+| 内存条--213--√   | 金百达3200 16GB*2                                            | 469<br />443 | 20       |
+| 固态--426.33--√  | 凯侠RC20 1T/西数SN570                                        | 418/475      | 20/10    |
+| 散热器--58.96--√ | 玄冰400V5                                                    | 72           | 略       |
+| 电源--500--      | 鑫谷GM 850W / 鑫谷GN 750W<br />先马平头哥M2<br />长城冰霜T5<br />乔思伯D31 | 469/318      | 50       |
+| 机箱--150--      | 略                                                           | 略           | 略       |
+| 2950             |                                                              | 3159         |          |
+

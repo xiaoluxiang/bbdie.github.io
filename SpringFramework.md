@@ -8,11 +8,40 @@
 
 ## IOC
 
-> 参考文档
->
-> [Spring中的循环依赖及解决](https://juejin.cn/post/6985337310472568839)
+> 参考文档：[Spring中的循环依赖及解决](https://juejin.cn/post/6985337310472568839)
 
-### 循环依赖
+### Bean的基础概念
+
+bean的作用域，在spring中，主要包括singleton,prototype,session,request,global
+
+### IOC体系设计
+
+设计IOC容器，容器要考虑输入和输出。输入通过BeanRegistry。输出通过容器BeanFactory对外提供方法。作为容器需要考虑内部对象的统一管理。故提出BeanDefinition概念，统一管理各种类对象。
+
+这里可自由发挥度最大实际上是BeanFactory，作为容器管理者。负责对象的创建，持有，销毁等。在对象的传递和转化过程中，可以对对象进行各种各样的限制。
+
+在实际使用中，真正使用的是ApplicationContext，即应用的上下文。其中自然包括BeanFactory的定义，以及项目级关系如资源加载，国际化，应用事件。其中根据资源加载方式。预定义AbstractApplicationContext，根据不同的资源加载方式，会有多种实际项目使用的XXApplicationContext
+
+
+
+![img](https://raw.githubusercontent.com/xiaoluxiang/picCollect/main/workDesign/img/spring-framework-ioc-source-71.png)
+
+### IOC初始化
+
+> IOC 初始化主要包括Bean配置信息加载，实例化，
+
+- 初始化的入口在容器实现中的 refresh()调用来完成
+- 对 bean 定义载入 IOC 容器使用的方法是 loadBeanDefinition,其中的大致过程如下：
+  - 通过 ResourceLoader 来完成资源文件位置的定位，DefaultResourceLoader 是默认的实现，同时上下文本身就给出了 ResourceLoader 的实现，可以从类路径，文件系统, URL 等方式来定为资源位置。如果是 XmlBeanFactory作为 IOC 容器，那么需要为它指定 bean 定义的资源，也就是说 bean 定义文件时通过抽象成 Resource 来被 IOC 容器处理的
+  - 通过 BeanDefinitionReader来完成定义信息的解析和 Bean 信息的注册, 往往使用的是XmlBeanDefinitionReader 来解析 bean 的 xml 定义文件 - 实际的处理过程是委托给 BeanDefinitionParserDelegate 来完成的，从而得到 bean 的定义信息，这些信息在 Spring 中使用 BeanDefinition 对象来表示 - 这个名字可以让我们想到loadBeanDefinition,RegisterBeanDefinition 这些相关的方法 - 他们都是为处理 BeanDefinitin 服务的
+  - 容器解析得到 BeanDefinition 以后，需要把它在 IOC 容器中注册，这由 IOC 实现 BeanDefinitionRegistry 接口来实现。注册过程就是在 IOC 容器内部维护的一个ConcurrentHashMap 来保存得到的 BeanDefinition 的过程。这个 HashMap 是 IoC 容器持有 bean 信息的场所，以后对 bean 的操作都是围绕这个HashMap 来实现的.
+- 然后我们就可以通过 BeanFactory 和 ApplicationContext 来享受到 Spring IOC 的服务了,在使用 IOC 容器的时候，我们注意到除了少量粘合代码，绝大多数以正确 IoC 风格编写的应用程序代码完全不用关心如何到达工厂，因为容器将把这些对象与容器管理的其他对象钩在一起。基本的策略是把工厂放到已知的地方，最好是放在对预期使用的上下文有意义的地方，以及代码将实际需要访问工厂的地方。 Spring 本身提供了对声明式载入 web 应用程序用法的应用程序上下文,并将其存储在ServletContext 中的框架实现。
+
+### IOC循环依赖
+
+> Bean的获取可通过getBean()方法，通过BeanName到BeanDefinition中获得BeanClassName。通过反射构建实例。如果是单例。还可以缓存下来，以供下次使用
+
+#### 单例循环依赖
 
 **问题来源**
 
@@ -120,7 +149,25 @@ public Object getEarlyBeanReference(Object bean, String beanName) {
 
 \4. 其实还要一个缓存，就是earlyProxyReferences，它用来记录某个原始对象是否进行过AOP了。
 
+#### 代理对象产生的循环依赖
 
+这类循环依赖问题解决方法很多，主要有：
+
+1. 使用@Lazy注解，延迟加载
+2. 使用@DependsOn注解，指定加载先后关系
+3. 修改文件名称，改变循环依赖类的加载顺序。@Async故会导致代理对象不等于二级缓存中对象
+
+#### @DependsOn产生的循环依赖
+
+这类循环依赖问题要找到@DependsOn注解循环依赖的地方，迫使它不循环依赖就可以解决问题。
+
+#### 多例循环依赖
+
+这类循环依赖问题可以通过把bean改成单例的解决。
+
+#### 构造器循环依赖
+
+这类循环依赖问题可以通过使用@Lazy注解解决
 
 ### 中间件集成
 
@@ -130,13 +177,13 @@ Import 可以用来简单加载类与配置类。也可以用于加载自定义�
 
 ### Bean的生命周期
 
+> 生命周期：Bean的定义收集->Bean实例化->Bean的属性注入->注入BeanFactory
+>
+> 涉及到Bean内部初始化方法，Bean生命周期，Bean容器，工厂后置处理
+
 ![img](https://raw.githubusercontent.com/xiaoluxiang/picCollect/main/workDesign/img/spring-framework-ioc-source-102.png)
 
-图片速记
-
-主线就是Bean的实例化和初始化的俩个过程，其中实例化就是反射调用构造方法生成对象，然后给属性赋值。初始化就是自定义Bean的init初始化方法。
-
-spring为我们提供了若干后置处理器让开发者充分介入上述过程。
+BeanFactoryPostProcesser：可以在Bean实例化之前修改BeanFactory中的BeanDefinition
 
 1. InstantiationAwareBeanPostProcessor在实例化前&后，让我们介入到Bean生成前后，InstantiationAwareBeanPostProcessor
 2. Aware通知接口，在我们知道实例化和初始化中间的中间信息
@@ -314,6 +361,12 @@ MyInstantiationAwareBeanPostProcessor's postProcessAfterInitialization for user
 
 > ApplicationContextHolder获取spring上下文？
 
+## Spring boot starter
+
+作用：解决依赖管理配置复杂的问题。直接引入starter即可引入特定开发所需依赖的集合。值得注意的是引入依赖并不代表使用依赖。
+
+使用：当然是否使用还是通过注解开启。
+
 ## 注解工作原理
 
 spring默认工作逻辑是拿到启动类的注解，这些注解被注解处理器处理。进而完成处理逻辑。
@@ -395,3 +448,12 @@ spring默认工作逻辑是拿到启动类的注解，这些注解被注解处�
 
 ## actuator监控工具
 
+自定义全局异常处理参考地址：https://juejin.cn/post/6959520793063587848
+
+Spring Boot 使用“习惯优于配置的理念”，采用包扫描和自动化配置的机制来加载依赖 Jar 中的 Spring bean，不需要任何 Xml 配置，就可以实现 Spring 的所有配置。虽然这样做能让我们的代码变得非常简洁，但是整个应用的实例创建和依赖关系等信息都被离散到了各个配置类的注解上，这使得我们分析整个应用中资源和实例的各种关系变得非常的困难。
+
+
+
+# Spring Security 
+
+spring security 是通过filter与servlet集成。在使用它的时不一定非要spring

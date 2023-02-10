@@ -277,3 +277,18 @@ bootstrap配置文件由spring父上下文加载，并且比application配置文
 但是注意，如果要使用配置文件中的变量，那么同名变量将使用application文件中的配置，因为在Environment中，application配置文件的propertySource排在bootstrap配置文件的propertySource之前，Spring 在进行属性注入、获取时，将会顺序遍历所有的propertySource查找属性，如果找到了就直接返回。.peoperties文件比.yaml文件的属性查找优先级更高的原理一样。
 ```
 
+
+
+# 术语
+
+日切，通俗的来说就是进行日期切换，更换系统记账的时间。日切过程中如果交易可以照常提交并正确处理返回，就说系统支持7*24小时不间断服务
+
+
+
+# 话术
+
+谈谈对XX的看法：先描述XX的定义，XX的功能/特点。描述业务场景，场景下的瓶颈，XX的解决方案。
+
+# Batch
+
+集群任务：数据划分，数据处理，任务调度。数据划分可以不同维度，key+start+offset，多次划分。数据处理可对应着read（可通过标志位循环read），process，write三大逻辑。本机调度：自定义完成处理流程，一次打满全场。也可以跨机调用（自定义rpc远程调用）

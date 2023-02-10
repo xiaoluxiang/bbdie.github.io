@@ -2,6 +2,26 @@
 
 ## Basic Lang
 
+### 类对象的创建过程
+
+> 参考地址：[JVM类生命周期概述：加载时机与加载过程](https://blog.csdn.net/justloveyou_/article/details/72466105)
+>
+> 加载->验证->准备->解析->初始化->使用->卸载
+
+类对象的变量的初始化是在准备和初始化阶段。准备阶段即为分配地址空间并对属性设置默认值。初始化即执行收集了所有的静态变量和类变量按照源码顺序合并的类构造器\<clinit>
+
+### 对象的创建过程
+
+> 父类的类构造器\<clinit>() -> 子类的类构造器\<clinit>() -> 父类的成员变量和实例代码块 -> 父类的构造函数 -> 子类的成员变量和实例代码块 -> 子类的构造函数。
+
+Java对象创建过程中，先是地址分配，实例对象的变量初始化，实例代码块的初始化，以及构造函数的初始化。其中实例对象的变量初始化和实例代码块的初始化是会被编译器放在构造函数代码中，并且先为执行。实例的变量和代码块的执行顺序是依照于编程顺序
+
+Java对象在实例化完成前，必须完成其超类对象的实例化，且为构造函数的第一行。可靠编译器自动生成
+
+实例对象的属性可最多被初始化四次
+
+类的初始化过程与类的实例化过程的异同？类的初始化是指类加载过程中的初始化阶段对类变量按照程序猿的意图进行赋值的过程；而类的实例化是指在类完全加载到内存中后创建对象的过程。
+
 ### 内部类
 
 > 参考地址：https://www.cnblogs.com/GrimMjx/p/10105626.html#_label2_1
@@ -25,7 +45,71 @@ switch 对于不同case，会有break用法。没有break会一直匹配下去�
 5. 动态代理必须实现InvocationHandler接口，通过反射代理方法，比较消耗系统性能，但可以减少代理类的数量，使用更灵活。
 6. cglib代理无需实现接口，通过生成类字节码实现代理，比反射稍快，不存在性能问题，但cglib会继承目标对象，需要重写方法，所以目标对象不能为final类。
 
-### HashMap
+### 泛型
+
+​	泛型是用来适合多种数据类型来执行相同的代码。在开发过程中对于某类或者很多类型来说，操作是相同的，故设计了泛型通过类型擦除来使用相同的代码。实现了代码量的降低。
+
+​	对于泛型匹配符？来说，其是不可get，也不可set。对于存在上下限的，可选一。如果皆需要，则必须要显式指定类型。
+
+​	使用上来说，可在类上显式指定，接口，方法。然后即可往下作用。
+
+### 注解
+
+​	注解有点意思，自JDK1.5版本之后引入，对代码进行说明。主要作用为生成文档，编译器检查，编译器动态处理，运行期动态处理四大功能
+
+​	通过Java自身标准注解，元注解（@Retention，@Target，@Inherited，@Document及自定义注解实现
+
+### 异常
+
+​	Java中的异常由顶级设计Throwable，下分Error和Exception。Exception下分RuntimeException和非运行时异常。另外异常又可分为受检查异常和不受检查异常。
+
+| Type                | Example                                                      |
+| ------------------- | ------------------------------------------------------------ |
+| Error               | IOError/ThreadDeath/OOM                                      |
+| RuntimeException    | IndexOutOfBoundsException/NullPointException/ClassCastException |
+| 非运行时异常        | ClassNotFoundException                                       |
+|                     |                                                              |
+| Unchecked Exception | RuntimeException和Error                                      |
+| Checked Exception   | Exception下的非运行时异常                                    |
+
+### 反射
+
+在运行时能动态的获取到类的属性和方法，并且能调用它的任一方法和属性。这种动态获取信息和动态调用对象的功能的方式称之为反射。
+
+在使用这里，主要是类的获取，Constructor，field，Method。
+
+| Type        | Useage                                                       | Description                                               |
+| ----------- | ------------------------------------------------------------ | --------------------------------------------------------- |
+| TypeGet     | 1. Class.forName("ClassName")  class.getName<br />2. ClassName.class  class.getSimpleName<br />3. new ClassNme().getClass()  class.newInstance() | 1. 通过全限定类名<br />2. 通过类名<br />3. 通过实例类对象 |
+| Constructor |                                                              |                                                           |
+| Field       |                                                              |                                                           |
+| Method      |                                                              |                                                           |
+
+### SPI
+
+> spi即service provider interface
+
+通过自定义规范（接口），主程序只需要按照规范进行API调用，Java支持按照依赖文件中的META-INF/services进行加载实现类。然后实现类完成API功能。
+
+META-INF/services目录下文件的写法：文件名需为接口的全限定名称，文件内容行需为实现类的全限定名称。在程序开发中通过使用ServiceLoader.load(Interface.class)，API完成服务加载。
+
+### Collection
+
+| Type      | AchieveWay | Feature |
+| --------- | ---------- | ------- |
+| List      |            |         |
+| ArrayList | 数组       |         |
+| LinkList  | 链表       |         |
+|           |            |         |
+| Queue     |            |         |
+|           |            |         |
+|           |            |         |
+|           |            |         |
+|           |            |         |
+
+
+
+### Map
 
 参考文章地址：https://www.nowcoder.com/discuss/820700
 
@@ -162,12 +246,6 @@ Reset:<br>	plus/plusXXXX:增加<br>	minus/minusXXXX:减少<br>	with/withXXXX:直
 
 > what's the feature, what I think that is pretty fun, so that's 
 
-### SPI
-
-> spi即service provider interface
-
-通过自定义规范（接口），主程序只需要按照规范进行API调用，Java支持按照依赖文件中的META-INF/services进行加载实现类。然后实现类完成API功能。
-
 # IO 
 
 > 背景就是应用程序向操作系统发起不同调用请求。操作系统作出不同响应，进而实现将内核中数据拷贝到应用程序中
@@ -245,17 +323,36 @@ sockets是面向流的而非包导向的。它们可以保证发送的字节会�
 
 里氏替换原则
 
-依赖倒置原则
-
 接口隔离原则
+
+依赖倒置原则
 
 单一职责原则
 
 迪米特法则
 
+​	最小知道法则，直接尽量只与自己的朋友通讯。朋友包括this，成员对象，方法参数，自己创建的对象。狭义上是尽量只调用自己朋友的公共方法和属性。目的是为了降低类之间的耦合性。广义上是指对信息流的隐藏，这种隐藏可以实现子系统之间的脱耦。
+
 组合/聚合原则
 
 开闭原则
+
+记忆图：
+
+```mermaid
+graph TB
+interface --接口隔离/依赖倒置--> child
+
+subgraph extend
+parent --里氏替换--> child
+child[child: 单一职责/迪米特/组合聚合] --开闭原则--> grandson
+end
+subgraph implement
+interface
+end
+```
+
+
 
 # Design Model
 
