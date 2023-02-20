@@ -25,7 +25,7 @@
 ## CPU实现中的术语
 
 1. 基础术语![image-20221106134257124](https://raw.githubusercontent.com/xiaoluxiang/picCollect/main/workDesign/img/image-20221106134257124.png)
-	1. 原子操作![image-20221106173756054](https://raw.githubusercontent.com/xiaoluxiang/picCollect/main/workDesign/img/image-20221106173756054.png)对于被处理器缓存的缓存行内容，如果在Lock期间被锁定，回写内存时，不必声明Lock#信号，直接修改内部地址。通过缓存一致性协议禁止其他处理器的修改。对于无法缓存活着缓存内容超过缓存行单位长度，则无法使用缓存锁定。
+	1. 原子操作![image-20221106173756054](https://raw.githubusercontent.com/xiaoluxiang/picCollect/main/workDesign/img/image-20221106173756054.png)对于被处理器缓存的缓存行内容，如果在Lock期间被锁定，回写内存时，不必声明Lock#信号，直接修改内部地址。通过缓存一致性协议禁止其他处理器的修改。对于无法缓存或者缓存内容超过缓存行单位长度，则无法使用缓存锁定。
 
 ## Java语言中的术语
 
@@ -41,7 +41,7 @@
 
    - 当单个对象不足机器的缓存行并且放到同一缓存行，会导致伪共享的现象。可使用填充字节的方式（可能会被JDK优化以致方法失效）
 
-   ***使用场景*：
+   
 
 2. ### <font color = 'blue' >synchronized</font>
 
@@ -65,8 +65,6 @@
 
    ***优缺点***：![image-20221106174703143](https://raw.githubusercontent.com/xiaoluxiang/picCollect/main/workDesign/img/image-20221106174703143.png)
 
-   ***使用场景***：
-
 3. ### <font color ='blue'>原子操作</font>
 
    ***含义***：不可中断的一系列操作。
@@ -74,7 +72,7 @@
    ***实现***：通过锁和CAS实现
 
    - CAS通过处理器的CMPXCHG。从Java 1.5开始，JDK的并发包里提供了一些类来支持原子操作，如AtomicBoolean(用原子 方式更新的boolean值)、AtomicInteger(用原子方式更新的int值)和AtomicLong(用原子方式更 新的long值)。这些原子包装类还提供了有用的工具方法，比如以原子的方式将当前值自增1和 自减1
-   - 利用锁机制实现院子操作，锁机制确保了只有获得锁的线程才能操作锁定的内存区域。除了偏向锁，JVM实现锁的方式都用了循环 CAS，即当一个线程想进入同步块的时候使用循环CAS的方式来获取锁，当它退出同步块的时 候使用循环CAS释放锁。
+   - 利用锁机制实现原子操作，锁机制确保了只有获得锁的线程才能操作锁定的内存区域。除了偏向锁，JVM实现锁的方式都用了循环 CAS，即当一个线程想进入同步块的时候使用循环CAS的方式来获取锁，当它退出同步块的时 候使用循环CAS释放锁。
 
    ***优缺点***：
 
@@ -208,22 +206,99 @@ Executor->ExecutorService->AbstractExecutorService->ThreadPoolExecutor
 
 > ctl是一个Integer值，它是对线程池运行状态和线程池中有效线程数量进行控制的字段.**Integer值一共有32位，其中高3位表示”线程池状态”，低29位表示”线程池中的任务数量”**
 
-### 基本信息
+### 基本逻辑
 
-1. 在最后即线程池满，线程满了，任务队列也满了的时候，采取拒绝策略前，还是要判断下线程池内所有的线程状态是否全部在工作中，如果全部工作中，那么再采用拒绝策略<br>![image-20220929220136720](https://raw.githubusercontent.com/xiaoluxiang/picCollect/main/workDesign/img/image-20220929220136720.png)
-2. 什么时候创建多于corePoolSize呢，在任务队列满了之后，maximumPoolSize允许创建多余的线程，即会创建多余线程。
-3. Java的线程既是工作单元，也是执行机制。从JDK 5开始，把工作单元与执行机制分离开 来。工作单元包括Runnable和Callable，而执行机制由Executor框架提供。换句话说，任务执行和任务调度的分离
+> 描述线程池的生命周期变化情况
 
-### CacheThreadPoolExecutor
+![image-20220929220136720](https://raw.githubusercontent.com/xiaoluxiang/picCollect/main/workDesign/img/image-20220929220136720.png)
+
+1. 由上图，初始时线程池未达到corePoolSize时，一旦提交任务就选择新建线程
+2. 当线程池满，就提交到任务队列中，如果任务队列已满，则查看能否继续新建线程即maximum是否允许新建
+3. 正常超过corePoolSize的线程按照疯狂去队列获取任务，知道满足超时时间后销毁
+4. Java的线程既是工作单元，也是执行机制。从JDK 5开始，把工作单元与执行机制分离开 来。工作单元包括Runnable和Callable，而执行机制由Executor框架提供。换句话说，任务执行和任务调度的分离
+
+### 使用方法
+
+> 线程池的客户是任务，任务的特点决定线程池的选型
+>
+> 考虑任务属性是CPU密集型orIO密集型，确定线程池大小->考虑线程池所需资源，确定线程超时时间->考虑优先级->考虑执行时间，确定线程队列
+
+提交：commit，submit
+
+关闭：shutdown，shutdownNow
+
+监控：ThreadPoolExecutor提供很多属性用于监控，也可以通过继承重写一些方法，获得线程池，任务执行的更多详细信息
+
+## Executor框架
+
+
+
+![](https://raw.githubusercontent.com/xiaoluxiang/picCollect/main/workDesign/img/image-20230217140059784.png)
+
+Executor主要是由任务，任务的执行，异步计算的结果
+
+主要成员：任务（Runable，CallAble），任务的执行（ThreadPoolExecutor及其子三个，ScheduleThreadPoolExecutor及其子二），异步计算的结果（Future）
+
+
+
+CacheThreadPoolExecutor
 
 1. SynchronousQueue在cacheThreadPool中使用其实还是很精巧的。`SynchronousQueue`队列的插入必须等待队列为空或者前一次poll操作完成。是同步阻塞的。但是cacheThreadPool可以拥有INTERGER.MAX_VALUE。线程允许缓存60s，还真是挺符合Cache这个定义的。缓存是有有效期的。
 
-### scheduledThreadPoolExecutor
+scheduledThreadPoolExecutor
 
 1. 作为定时执行类线程池，处理周期性任务`ScheduledFutureTask`。开发者往队列里面加任务，线程自动取，然后执行任务，再修改任务时间信息，扔回任务队列。
 2. condition中所有的线程都是在等待中，如果当前加入`ScheduledFutureTask`是被插入到头节点中，则会唤醒所有condition中的线程进行新一次的判断,<br>唤醒所有线程后是不是所有线程都需要进行一次判断，功能上是不是存在重复呢？
 
-# Atomic类
+# 并发类
+
+## 并发操作原子类
+
+
+
+## 原子操作类
+
+> JDK中的Unsafe提供了三种CAS方法，compareAndSwapObject、compare- AndSwapInt和compareAndSwapLong。所以对应的可以Object，Int，Long三者的原子更新
+>
+> AtomicBoolean，AtomicInteger，AtomicLong
+>
+> AtomicBooleanArray，AtomicIntegerArray，AtomicreferenceArray
+>
+> AtomicReference，AtomicReferenceFieldUpdater，AtomicMarkableReference
+>
+> AtomicIntegerFieldUpdater，AtomicLongFieldUpdater，AtomicStampedReference
+
+原子更新基本类型3，数组4（通过构造方法引入的数组是不会改变的），引用类型3，字段3，感受一下API的命名getAndSet，addAndSet，compareAndSet。
+
+都是将值传递进去，包装后按照调用Atomic那边的API，完成对原对象的操作
+
+
 
 > CAS算法是由硬件直接支持来保证原子性的，有三个操作数：**内存位置V、旧的预期值A和新值B，当且仅当V符合预期值A时，CAS用新值B原子化地更新V的值，否则，它什么都不做。**CAS也并不完美，它存在"ABA"问题，CAS只关注了比较前后的值是否改变，而无法清楚在此过程中变量的变更明细，这就是所谓的ABA漏洞。 
+
+## 并发工具类
+
+### CountDownLatch
+
+通过传递变量countDownLatch完成等待与同步的作用，可用于不同线程间（也可以是步骤节点）的同步，是通知主持有者，然后自己可以正常执行
+
+### CyclicBarrier
+
+通过传递变量countDownLatch完成等待与同步的作用，可用于不同线程间（也可以是步骤节点）的同步，是通知cyclicBarrier，我已抵达，阻塞，等待被通知
+
+可以被reset，即可以重试
+
+提供多种信息属性，了解CyclicBarrier状态
+
+### Semaphore
+
+通过传递变量semaphore完成等待与同步的作用，用于控制访问特定资源的线程数量。尝试获取令牌，获取成功则进行操作，最后释放令牌。
+
+提供多种方法，了解Semaphore的状态
+
+### Exchange
+
+通过传递变量exchange完成线程间交换作用，尝试exchange方法后，原地阻塞，知道其他线程完成交换
+
+> 
 

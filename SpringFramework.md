@@ -221,18 +221,13 @@ MyInstantiationAwareBeanPostProcessor's postProcessAfterInitialization for user
 
 ## AOP
 
-> Aspect Oriented programming 面向切面（连接点，切入点，通知）编程。通过预编译和运行期动态代理实现程序的横向代码重复问题，解决了传统的基于继承的纵向的导致的重复问题
+> Aspect Oriented programming 面向切面（连接点，切入点，通知）编程。通过预编译和运行期动态代理避免程序的横向代码重复问题，解决了传统的基于继承的纵向的导致的重复问题
 
 ### AOP术语
 
 连接点，切入点，通知，切面，引入，目标对象，织入，AOP代理
 
 通知类型： 前置通知，后置通知，环绕通知，最终通知，异常通知
-
-### Spring AOP和AspectJ的区别
-
-1. AspectJ是更强意义上的AOP框架，也是事实上的AOP标准。
-2. Aspect是主要通过预编译完成即编译期注入，Spring AOP完全是纯Java实现，基于运行期动态代理生成，主要通过JDK动态代理和CGLIB代理
 
 ### 配置AOP
 
@@ -241,6 +236,8 @@ MyInstantiationAwareBeanPostProcessor's postProcessAfterInitialization for user
 > ||：要求连接点匹配任意个切入点表达式
 > !:：要求连接点不匹配指定的切入点表达式
 > ```
+
+![img](https://raw.githubusercontent.com/xiaoluxiang/picCollect/main/workDesign/img/spring-framework-aop-7.png)
 
 #### XML schema 配置动态代理
 
@@ -329,7 +326,7 @@ MyInstantiationAwareBeanPostProcessor's postProcessAfterInitialization for user
     }
 ```
 
-![img](https://raw.githubusercontent.com/xiaoluxiang/picCollect/main/workDesign/img/spring-framework-aop-7.png)
+
 
 | Spring AOP                                       | AspectJ                                                      |
 | ------------------------------------------------ | ------------------------------------------------------------ |
@@ -345,7 +342,59 @@ MyInstantiationAwareBeanPostProcessor's postProcessAfterInitialization for user
 
 #### spring AOP 
 
-#### Spring AOP还是完全用AspectJ？
+基于CGLib的动态代理
+
+```java
+
+/**
+ * This class is for proxy demo.
+ *
+ * @author pdai
+ */
+public class UserLogProxy implements MethodInterceptor {
+
+    /**
+     * 业务类对象，供代理方法中进行真正的业务方法调用
+     */
+    private Object target;
+
+    public Object getUserLogProxy(Object target) {
+        //给业务对象赋值
+        this.target = target;
+        //创建加强器，用来创建动态代理类
+        Enhancer enhancer = new Enhancer();
+        //为加强器指定要代理的业务类（即：为下面生成的代理类指定父类）
+        enhancer.setSuperclass(this.target.getClass());
+        //设置回调：对于代理类上所有方法的调用，都会调用CallBack，而Callback则需要实现intercept()方法进行拦
+        enhancer.setCallback(this);
+        // 创建动态代理类对象并返回
+        return enhancer.create();
+    }
+
+    // 实现回调方法
+    @Override
+    public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
+        // log - before method
+        System.out.println("[before] execute method: " + method.getName());
+
+        // call method
+        Object result = proxy.invokeSuper(obj, args);
+
+        // log - after method
+        System.out.println("[after] execute method: " + method.getName() + ", return value: " + result);
+        return null;
+    }
+}
+```
+
+
+
+### Spring AOP和AspectJ的区别
+
+1. AspectJ是更强意义上的AOP框架，也是事实上的AOP标准。
+2. Aspect是主要通过预编译完成即编译期注入，Spring AOP完全是纯Java实现，基于运行期动态代理生成，主要通过JDK动态代理和CGLIB代理
+
+### Spring AOP还是完全用AspectJ？
 
 以下Spring官方的回答：（总结来说就是 **Spring AOP更易用，AspectJ更强大**）。
 

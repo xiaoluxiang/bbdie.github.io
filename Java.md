@@ -95,19 +95,29 @@ META-INF/services目录下文件的写法：文件名需为接口的全限定名
 
 ### Collection
 
-| Type      | AchieveWay | Feature |
-| --------- | ---------- | ------- |
-| List      |            |         |
-| ArrayList | 数组       |         |
-| LinkList  | 链表       |         |
-|           |            |         |
-| Queue     |            |         |
-|           |            |         |
-|           |            |         |
-|           |            |         |
-|           |            |         |
+> 回答某某类型时，回答套路：基于XX实现，支持XX，不支持XX，时间复杂度为XX。可用于什么场景
 
+Collection：List，Queue，Set
 
+- List：
+
+  - ArrayList：动态数组实现，支持顺序查找和随机查找
+  - LinkedList：双向链表实现，支持快速插入和删除，可用作栈和队列
+
+  - Vector
+
+- Queue
+
+  - LinkedQueue：双向链表实现，可用作双向队列
+  - PriorityQueue：堆结构实现，可用作优先队列
+
+- Set
+
+  - HashSet：红黑树实现，支持有序操作
+  - TreeSet：Hash表实现，支持快速查找，不支持有序操作
+  - LinkedHashSet：：Hash表实现，双向链表维护
+
+Map：HashMap，HashTable（ConcurrentHashMap），LinkedHashMap，TreeMap
 
 ### Map
 
