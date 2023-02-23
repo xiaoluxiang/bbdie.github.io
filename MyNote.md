@@ -292,3 +292,19 @@ bootstrap配置文件由spring父上下文加载，并且比application配置文
 # Batch
 
 集群任务：数据划分，数据处理，任务调度。数据划分可以不同维度，key+start+offset，多次划分。数据处理可对应着read（可通过标志位循环read），process，write三大逻辑。本机调度：自定义完成处理流程，一次打满全场。也可以跨机调用（自定义rpc远程调用）
+
+
+
+
+
+
+
+
+
+
+
+# remember
+
+网络：架构->协议->认证->安全
+
+单例：

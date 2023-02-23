@@ -250,6 +250,36 @@ Reset:<br>	plus/plusXXXX:增加<br>	minus/minusXXXX:减少<br>	with/withXXXX:直
 
 格式化:<br>	DateTimeFormatter:<br>		固定枚举:DateTimeFormatter.ISO_LOCAL_DATE<br>		自定义格式类型:DateTimeFormatter.ofPattern();<br>	Format: LocalDateTime.format(DateTimeFormatter);<br>	Parse:LocalDateTime.parse("",DateTimeFormatter);
 
+### 枚举
+
+> 枚举也是类，所以可以有属性及方法，所以对应枚举类的属性和方法的初始化
+
+```java 
+package com.lushixiang.TestSimple;
+
+public enum Operator {
+    // 实现抽象方法
+    ADD(1,3){
+        @Override
+        public int apply(int a, int b){
+            return a+b;
+        }
+    };
+
+    // 定义枚举属性
+    public final int a ;
+    public final int b;
+    // 定义抽象方法
+    public abstract int apply(int a, int b);
+    // 定义初始化方法
+    private Operator(int x1, int x2){
+        a = x1;
+        b = x2;
+        System.out.println("Operator is init...");
+    }
+}
+```
+
 
 
 ## Feature
@@ -366,9 +396,19 @@ end
 
 # Design Model
 
+## 设计原则
+
+> 生成类：单例->原型->工厂->生成
+>
+> 结构类：适配->组合->桥接->外观->装饰->代理->享元
+>
+> 行为类：责任链->旁观->访问->策略->模版->命令->状态...
+
 单例模式
 
+Get方法
 
+静态属性->synchorized静态方法->双检锁静态方法->静态内部类->枚举
 
 ## Facade模式，适配器模式，桥接模式
 
