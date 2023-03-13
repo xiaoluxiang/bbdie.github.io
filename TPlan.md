@@ -1,3 +1,23 @@
+1. 进程和线程的概念、区别及进程线程间通信
+   参考地址：https://cloud.tencent.com/developer/article/1688297
+2. 并行和并发的概念区别
+   参考地址：http://c.biancheng.net/view/95.html
+3. synchronized和reenterantLock
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ```mermaid

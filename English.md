@@ -276,3 +276,5 @@ after nearly two decades of a fickle and  somewhat financially impulsive approac
 | 电源   | 长城G6/长城G7 （二选一）        | 400                   |
 | 机箱   | 航嘉暗影猎手/乔思伯U4 plus/自选 | 80                    |
 |        |                                 | 2990                  |
+
+设计数据库配置表、批量自定义参数、Apollo配置中心等，同时提供 WEB  页面以供部分调整，支持机构和产品的灵活接入。实现业务功能的高度配置化；

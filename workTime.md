@@ -152,12 +152,6 @@ private static final WeakCache<ClassLoader, Class<?>[], Class<?>> proxyClassCach
 
 过滤器中通过反射校验特定注解的修饰的属性情况
 
-
-
-# 设计原则
-
-1. 开闭原则
-
 # 算法
 
 1: 在操作上存在重复现象-重复操作可用备忘录或者动态规划进行优化
