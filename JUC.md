@@ -1,6 +1,8 @@
 # Java并发编程基础
 
 > 遇到一个有趣的问题，如果一个线程拿到另一个线程B的锁，然后把调用B的wait()方法，B被加入到等待队列中，谁会把B拿到同步队列中。
+>
+> 无锁开发->非阻塞乐观锁->读写锁分离->降低锁的粒度&减少锁的持有时间
 
 ## Java内存模型中的术语
 
@@ -282,6 +284,16 @@ scheduledThreadPoolExecutor
 
 通过传递变量countDownLatch完成等待与同步的作用，可用于不同线程间（也可以是步骤节点）的同步，是通知主持有者，然后自己可以正常执行
 
+```java
+// 常用API
+// 构造方法
+public CountDownLatch(int count) {  };  //参数count为计数值
+// 功能方法
+public void await() throws InterruptedException { };   //调用await()方法的线程会被挂起，它会等待直到count值为0才继续执行
+public boolean await(long timeout, TimeUnit unit) throws InterruptedException { };  //和await()类似，只不过等待一定的时间后count值还没变为0的话就会继续执行
+public void countDown() { };  //将count值减1
+```
+
 ### CyclicBarrier
 
 通过传递变量countDownLatch完成等待与同步的作用，可用于不同线程间（也可以是步骤节点）的同步，是通知cyclicBarrier，我已抵达，阻塞，等待被通知
@@ -290,15 +302,56 @@ scheduledThreadPoolExecutor
 
 提供多种信息属性，了解CyclicBarrier状态
 
+```java
+// 常用API
+// 构造方法
+public CyclicBarrier(int parties, Runnable barrierAction) {
+}
+ 
+public CyclicBarrier(int parties) {
+}
+// 功能方法
+public int await() throws InterruptedException, BrokenBarrierException { };
+public int await(long timeout, TimeUnit unit)throws InterruptedException,BrokenBarrierException,TimeoutException { };
+```
+
 ### Semaphore
 
 通过传递变量semaphore完成等待与同步的作用，用于控制访问特定资源的线程数量。尝试获取令牌，获取成功则进行操作，最后释放令牌。
 
 提供多种方法，了解Semaphore的状态
 
+```java
+// 常用API
+// 构造方法
+public Semaphore(int permits) {          //参数permits表示许可数目，即同时可以允许多少线程进行访问
+    sync = new NonfairSync(permits);
+}
+public Semaphore(int permits, boolean fair) {    //这个多了一个参数fair表示是否是公平的，即等待时间越久的越先获取许可
+    sync = (fair)? new FairSync(permits) : new NonfairSync(permits);
+// 功能方法
+    public void acquire() throws InterruptedException {  }     //获取一个许可
+public void acquire(int permits) throws InterruptedException { }    //获取permits个许可
+public void release() { }          //释放一个许可
+public void release(int permits) { }    //释放permits个许可
+```
+
 ### Exchange
 
 通过传递变量exchange完成线程间交换作用，尝试exchange方法后，原地阻塞，知道其他线程完成交换
 
-> 
+```java
+// 常用API
+// 构造方法
+public Semaphore(int permits) {          //参数permits表示许可数目，即同时可以允许多少线程进行访问
+    sync = new NonfairSync(permits);
+}
+public Semaphore(int permits, boolean fair) {    //这个多了一个参数fair表示是否是公平的，即等待时间越久的越先获取许可
+    sync = (fair)? new FairSync(permits) : new NonfairSync(permits);
+// 功能方法
+    public void acquire() throws InterruptedException {  }     //获取一个许可
+public void acquire(int permits) throws InterruptedException { }    //获取permits个许可
+public void release() { }          //释放一个许可
+public void release(int permits) { }    //释放permits个许可
+```
 

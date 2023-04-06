@@ -139,7 +139,8 @@ private static final WeakCache<ClassLoader, Class<?>[], Class<?>> proxyClassCach
 
 # Java Lang
 
-1. protect 方法，只能同包内访问，或者访问通过继承得到的方法（即子类自己同包方法调用）<br>同包：调用的位置所属包开始分辨
+1. protected修饰符用于提供包访问权限。非静态成员使用法对于同包内使用同public，不同包内只能使用子类方法（引用类型必须为子类）。当然可以通过子类重写该方法时通过调用父类的super.XX来加强。
+   静态成员就只有通过子类访问
 
 # Decimal
 
