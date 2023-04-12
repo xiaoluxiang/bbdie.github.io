@@ -169,6 +169,10 @@ public Object getEarlyBeanReference(Object bean, String beanName) {
 
 这类循环依赖问题可以通过使用@Lazy注解解决
 
+
+
+### Spring Bean自定义注入的若干种方式
+
 ### 中间件集成
 
 Import 可以用来简单加载类与配置类。也可以用于加载自定义的ImportSelector（动态加载字符串，搭配Enable使用），ImportBeanDefinitionRegistrar（动态直接加载类）
@@ -401,8 +405,6 @@ public class UserLogProxy implements MethodInterceptor {
 - Spring AOP比完全使用AspectJ更加简单， 因为它不需要引入AspectJ的编译器／织入器到你开发和构建过程中。 如果你**仅仅需要在Spring bean上通知执行操作，那么Spring AOP是合适的选择**。
 - 如果你需要通知domain对象或其它没有在Spring容器中管理的任意对象，那么你需要使用AspectJ。
 - 如果你想通知除了简单的方法执行之外的连接点（如：调用连接点、字段get或set的连接点等等）， 也需要使用AspectJ。
-
-
 
 # Spring Boot
 

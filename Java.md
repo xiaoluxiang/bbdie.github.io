@@ -1,5 +1,7 @@
 # Java
 
+![img](https://raw.githubusercontent.com/xiaoluxiang/picCollect/main/workDesign/img/aHR0cHM6Ly91cGxvYWQtaW1hZ2VzLmppYW5zaHUuaW8vdXBsb2FkX2ltYWdlcy8xMTc5Mzg5LTc1MTcyZGZmNDZiZWNmYWMucG5n)
+
 ## Basic Lang
 
 ### 类对象的创建过程
@@ -122,6 +124,51 @@ Map：HashMap，HashTable（ConcurrentHashMap），LinkedHashMap，TreeMap
 ### Map
 
 参考文章地址：https://www.nowcoder.com/discuss/820700
+
+### Stream 
+
+> 参考地址：https://blog.csdn.net/m0_56223907/article/details/125790208
+>
+> Stream的创建，筛选，映射，结果选择，归约与收集
+
+创建
+```java
+collect.stream;
+Arrays.stream;
+Stream.of;
+Stream.iterate/Stream.generate;
+```
+
+筛选
+
+```java
+stream.filter;
+stream.distinct;
+stream.skip;
+stream.limit;
+```
+
+映射(参数都为函数)
+
+```java
+stream.map;
+stream.flatMap;
+```
+
+结果筛选，收集与归约
+
+```java
+stream.allMatch/anyMatch;
+stream.findFirst/findAny;
+stream.count/max/min;
+
+stream.reduce;
+stream.collect;
+```
+
+
+
+
 
 ***数据结构***
 
