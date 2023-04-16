@@ -1,7 +1,5 @@
 # 微服务架构基本描述
 
-
-
 # 微服务组件
 
 > 参考地址：[微服务架构设计](https://gudaoxuri.gitbook.io/microservices-architecture/)
@@ -13,8 +11,6 @@
 > 当服务被拆分之后，随之带来了调用问题，路径，权限，跨域等
 >
 > 引入Gateway作为统一入口	
-
-
 
 
 
@@ -73,6 +69,36 @@ slf4j已经成为了Java日志组件的明星选手，可以完美替代JCL，�
 ![img](https://raw.githubusercontent.com/xiaoluxiang/picCollect/main/workDesign/img/v2-c0088ff8964a97f232081b5b2a08c068_720w.png)
 
 # 分布式系统
+
+**分布式系统**定义：若干独立计算机共同对外提供服务，但对于系统用户来说，就像是一台计算机在提供服务
+
+**分布式系统面临的问题：**全局时钟，网络异常（网络不可靠，且不确保顺序），节点宕机，结果三态，存储数据丢失。
+
+**分布式系评价统指标：**性能，扩展性，高可用，一致性
+
+**分布式系统理论基础：**CAP原理和BASE原理（AP的补充，关注最终一致性）
+
+## 分布式一致性算法
+
+> 参考地址：https://pdai.tech/md/algorithm/alg-domain-distribute-x-consistency-hash.html
+
+**一致性Hash算法**
+
+评价指标：平衡性（分配结果多均衡），单调性（节点增加，原有尽量不动），分散性（避免相同的内容被分配到不同的缓存区），负载（避免不同的内容被分配到相同的缓冲区
+
+为了将映射空间设置成环形，为了防止动态平衡性，增加为实际节点增加诸多虚拟节点。
+
+**paxos算法**
+
+***prepare阶段：***proposer生成全局唯一递增的的proposal ID，携带该ID发送prepare请求。accept收到请求后做出不接受小于等于该ID的prepare请求，不接受小于当前ID的proposal请求。并返回自己当前最大proposal ID和value；
+
+***accept阶段：***proposal在收到多数响应之后，选择proposal最大的ID的里的value（均为空则可以自定义），外加自己的proposal ID作为本次发起的提案。acceptor在不违背之前的承诺持久化最大的proposal ID和value；proposer在收到多数acceptor的accept之后，标志决议形成，通知learners。
+
+Multi-Paxos算法：通过basic-paxos选出leader，由leader提proposal。leader节点宕机之后，重新选举。
+
+**Raft算法：**
+
+ZAB算法
 
 ## 幂等与去重
 

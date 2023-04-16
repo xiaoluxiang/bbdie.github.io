@@ -227,6 +227,8 @@ MyInstantiationAwareBeanPostProcessor's postProcessAfterInitialization for user
 
 > Aspect Oriented programming 面向切面（连接点，切入点，通知）编程。通过预编译和运行期动态代理避免程序的横向代码重复问题，解决了传统的基于继承的纵向的导致的重复问题
 
+Spring 框架通过定义切面, 通过拦截切点实现了不同业务模块的解耦，这个就叫**面向切面编程 - Aspect Oriented Programming (AOP)**。主要实现**分静态代理和动态代理**，动态代理又包含JDK代理和CGLIB代理等
+
 ### AOP术语
 
 连接点，切入点，通知，切面，引入，目标对象，织入，AOP代理
@@ -408,8 +410,6 @@ public class UserLogProxy implements MethodInterceptor {
 
 # Spring Boot
 
-
-
 > ApplicationContextHolder获取spring上下文？
 
 ## Spring boot starter
@@ -514,3 +514,4 @@ Spring Boot 使用“习惯优于配置的理念”，采用包扫描和自动�
 # Spring Security 
 
 spring security 是通过filter与servlet集成。在使用它的时不一定非要spring
+
