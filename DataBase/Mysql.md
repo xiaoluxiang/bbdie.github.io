@@ -13,28 +13,26 @@ float(),double(),decimal()；可以指定列宽。即double(10,5)。不含小数
 varchar()，char()。blob，text
 
 varchar允许可变长存储，去除末尾空格。
-
 char不允许超长，会保留末尾空格。
+blog：二进制存储，没有规则顺序；
+text：字符串存储，有排序规则；
 
 ## 日期
 
 datetime，timestamp。
 
 datetime使用8字节存储，单位为秒。存储范围1001-9999。与时区无关。
-
 timestamp使用4字节存储，单位为秒。存储范围1970-2038。与时区有关，能自动转换
+YYYY: week year；yyyy:normal year；MM：月份； d：月份中的天数；D：年份中的天数；H：24小时；h：12小时；m：分钟；s：秒；S：毫秒；
 
 ## 真值表
 
-|       | true | false | null |
-| ----- | ---- | ----- | ---- |
-| true  |      |       |      |
-| false |      |       |      |
-| null  |      |       |      |
+and or / true, false, null;
 
+**and**: false> null > true;
+**or**: true > null > false;
 
-
-
+其他对于null的相等不等判断均为null；
 
 # 存储引擎
 
@@ -234,7 +232,15 @@ redo log
 
 > 主从复制：从机订阅主机的bin log 日志，增量读取存入从机的中继日志中，然后重放日志内。完成主从复制
 >
-> 读写分离：主机分则写操作及一些高实时性要求操作，从机负责读操作
+> 读写分离：主机负责写操作及一些高实时性要求操作，从机负责读操作
+>
+> - 数据库schema设计优化
+> - SQL查询优化
+> - 锁策略优化
+> - 存储引擎优化
+> - 服务器配置优化
+> - 主从，读写分离
+> - 集群，负载均衡
 
 ### 数据库层面
 
@@ -252,57 +258,74 @@ redo log
 
 # MySQL语法
 
-## alter
+> alter参考地址：[MySQL修改字段名、修改字段类型](https://blog.csdn.net/u010002184/article/details/79354136)
 
-- 数据库表字段的增删查改，[**MySQL修改字段名、修改字段类型**](https://blog.csdn.net/u010002184/article/details/79354136)
+## 基本语法
+
+**显示数据库信息**
+
+```sql
+
+use XXdatabases;
+show databases; show tables; show variable like '';
+-- 显示表信息
+show create table tableName;show index from XX;
+
+```
+
+**数据表及表结构的增删改查**
 
 ```mysql
--- MySQL 常规语法
+--  表的增删改查，需要加table
+create table [if not exists] XX(,,,)comment '';
+drop table XX;
 
---show 
-show variable like '';
-show status like '';
-show create table tableName;
-
--- select 
-select XX from where XX order by XX
-
--- update
-
--- alter 记忆顺序，表->索引->字段增改删-> 
+-- 表名，表索引，表字段
+-- alter表->索引->字段增改删(add, change, modify, drop)
 alter table XX rename to newTableName;
+
 alter table XX add Index indexName(lineName);
 alter table XX add column columnName...;
-alter table XX add column columnName... before/after columnName;
+alter table XX add column columnName... [[before][after]] columnName;
 alter table XX modify column columnName ...;
 alter table XX change column oldColumnName newColunmName...;
+
+alter table XX drop index indexName;
 alter table XX drop column columnName;
 ```
 
+**表记录的增删改查**
+
+```mysql
+-- 表内容的增删改查
+select, update, insert, delete,truncate;
+
+-- 算数运算符：
+-- 逻辑运算符：and or in exists like [not in  not exists]
+-- group by和having是组合使用的
+select [distinct] XX from XX [join on] where [算数运算符] [逻辑运算符] group having order by limit [union];
+
+update XX set XX where XX;
+update a,b set a.XX = b.XX where a.xx = b.xx;
+
+-- join详解，参照数学上的交集
+select a.XX, b.XX from a [left join, inner join, right join] b on a.XX = b.XX;
+```
+
+**特殊SQL**
+
+```mysql
+/*
+插入时判断是否增长，参考[***博文***](https://www.cnblogs.com/better-farther-world2099/articles/11737376.html)
+1. 自增主键不会连续自增
+2. 会产生DeathLock的问题
+3. 替代方案就是先进行update，根据结果进行判断是否进行insert
+*/
+insert into XX () values() on duplicate key update XX;
 
 
-## MySQL on duplicate key update
-
-> 参考[***博文***](https://www.cnblogs.com/better-farther-world2099/articles/11737376.html)
-
-1. 语句含义，无则插入，有则更新，update后直接跟条件即可
-2. 自增主键不会连续自增
-3. 会产生DeathLock的问题
-4. 替代方案就是先进行update，根据结果进行判断是否进行insert
-
-## last_insert_id
-
-> 使用[***last_insert_id***](https://blog.csdn.net/slvher/article/details/42298355)注意事项
-
-small squirrel good night 
-
-
-
-# MySQL常见异常
-
-## 1093
-
-​	mysql出现You can’t specify target table for update in FROM clause 这个错误的意思是不能在同一个sql语句中，先select同一个表的某些值，然后再update这个表。**select的结果再通过一个中间表select多一次，就可以避免这个错误**
+[***last_insert_id***](https://blog.csdn.net/slvher/article/details/42298355)
+```
 
 
 
@@ -318,6 +341,12 @@ small squirrel good night
 
 > [原文地址-Java码农](https://www.jianshu.com/p/b7c53ee0ed0e)
 
+**MVCC原理**
+
+可重复读隔离级是由 MVCC（多版本并发控制）实现的，实现的方式是启动事务后，在执行第一个查询语句后，会创建一个 Read View，**后续的查询语句利用这个 Read View，通过这个  Read View 就可以在 undo log 版本链找到事务开始时的数据，所以事务过程中每次查询的数据都是一样的**，即使中途有其他事务插入了新纪录，是查询不出来这条数据的，所以就很好了避免幻读问题。
+
+事务 A 执行了这条当前读语句后，就在对表中的记录加上 id 范围为 (2, +∞] 的 next-key lock（next-key lock 是间隙锁+记录锁的组合）。然后，事务 B 在执行插入语句的时候，判断到插入的位置被事务 A 加了  next-key lock，于是事务 B 会生成一个插入意向锁，同时进入等待状态，直到事务 A 提交了事务。这就避免了由于事务 B 插入新记录而导致事务 A 发生幻读的现象
+
 MVCC是分为当前读和快照读<br>**针对快照读**（普通 select 语句），是**通过 MVCC 方式解决了幻读**，因为可重复读隔离级别下，事务执行过程中看到的数据，一直跟这个事务启动时看到的数据是一致的，即使中途有其他事务插入了一条数据，是查询不出来这条数据的，所以就很好了避免幻读问题。<br>**针对当前读**（select ... for update 等语句），是**通过 next-key lock（记录锁+间隙锁）方式解决了幻读**，因为当执行 select ... for update 语句的时候，会加上 next-key lock，如果有其他事务在 next-key lock 锁范围内插入了一条记录，那么这个插入语句就会被阻塞，无法成功插入，所以就很好了避免幻读问题。
 
 第一个例子：对于快照读， MVCC 并不能完全避免幻读现象。因为当事务 A 更新了一条事务 B 插入的记录，那么事务 A 前后两次查询的记录条目就不一样了，所以就发生幻读。
@@ -330,7 +359,7 @@ MVCC是分为当前读和快照读<br>**针对快照读**（普通 select 语句
 
 []
 
-# 大量的关注/粉丝设计
+**大量的关注**/粉丝设计
 
 设计表结构，关注了就增加关注与被关注记录。此时考虑的单条记录的其他属性
 
@@ -340,13 +369,13 @@ MVCC是分为当前读和快照读<br>**针对快照读**（普通 select 语句
 
 考虑业务场景下的优化，分数数量直接成为字段之一，业务上禁止查询。
 
-# 对于很多的待做的事情
+**对于很多的待做的事情**
 
 专门的数据库表来记录，然后定时处理
 
 MQ的定时消息
 
-# 秒杀
+**秒杀**
 
 动静分离，将静态资源部署到CDN上。极少数允许动态请求
 
@@ -384,3 +413,16 @@ MQ的定时消息
 
 **2、不在索引列上做任何操作**
 
+
+
+
+
+**回调函数**：把函数的指针（地址）作为参数传递给另一个函数，当这个指针调用其所指向的函数时，就称这是回调函数。
+
+**多态：**同一段代码执行时却表现出不同的行为状态。简单的说，可以理解为允许将不同的子类类型的对象动态赋值给父类类型的变量，通过父类的变量调用方法在执行时实际执行的可能是不同的子类对象方法，因而表现出不同的执行效果。
+
+**闭包**：函数和对其周围状态的引用捆绑在一起构成闭包。也就是说，闭包可以让你从内部函数访问外部函数作用域。
+
+**异步调用**：promise将异步调用以同步的流程表达出来，避免嵌套回调函数，简化了回调函数传入的接口实现。
+
+**匿名函数**：lamda函数在常见的命令式编程语言中以匿名函数的形式出现，比如无参数的代码块或者箭头函数
