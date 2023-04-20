@@ -491,6 +491,12 @@ spring默认工作逻辑是拿到启动类的注解，这些注解被注解处�
 
 > 事务实现原理：通过AOP在方法执行前后增加了数据库事务操作。先判断当时事务状态，根据传播类型`PROPAGATION`。需要开启则` set autocommit=0`，执行完成后提交`commit`，异常后`rollback`。
 
+事务实现原理
+
+事务传播机制
+
+支持当前事务：propagation.required/support/mandatory；不支持当前事务：propagation.required_new/not_supported/never；其他：propagation.nested(如果当前存在事务就嵌套执行，否则就是required)
+
 ## 定时任务schedule
 
 ## 文件下载上传

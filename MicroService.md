@@ -1,6 +1,6 @@
 # 微服务架构基本描述
 
-# 微服务组件
+# 分布式组件
 
 > 参考地址：[微服务架构设计](https://gudaoxuri.gitbook.io/microservices-architecture/)
 
@@ -62,11 +62,11 @@ slf4j已经成为了Java日志组件的明星选手，可以完美替代JCL，�
 3. 远程服务线程反序列化，拿到对象，然后执行方法。对返回值进行序列化，传回给调用方
 4. 本地代理对象拿到返回，反序列化，返回完成。
 
-![img](https://raw.githubusercontent.com/xiaoluxiang/picCollect/main/workDesign/img/v2-54c36e07764895d3da67c7fc624789c5_720w.jpg)
+<img src="https://raw.githubusercontent.com/xiaoluxiang/picCollect/main/workDesign/img/v2-54c36e07764895d3da67c7fc624789c5_720w.jpg" alt="img" style="zoom:67%;" />
 
-![img](https://raw.githubusercontent.com/xiaoluxiang/picCollect/main/workDesign/img/v2-d690accc669d726fe122d6da6caa75a1_720w.jpg)
+<img src="https://raw.githubusercontent.com/xiaoluxiang/picCollect/main/workDesign/img/v2-d690accc669d726fe122d6da6caa75a1_720w.jpg" alt="img" style="zoom:50%;" />
 
-![img](https://raw.githubusercontent.com/xiaoluxiang/picCollect/main/workDesign/img/v2-c0088ff8964a97f232081b5b2a08c068_720w.png)
+<img src="https://raw.githubusercontent.com/xiaoluxiang/picCollect/main/workDesign/img/v2-c0088ff8964a97f232081b5b2a08c068_720w.png" alt="img" style="zoom:50%;" />
 
 # 分布式系统
 
@@ -115,6 +115,8 @@ ZAB算法
 
 ## 分布式锁
 
+setnx set if not exists
+
 **正常JVM锁和分布式锁：**
 
 - 公平与非公平锁实现顺序和优先队列，读写锁提高效率，可重入锁避免死锁，JVM提供无锁，偏向，轻量，重量级锁
@@ -122,8 +124,10 @@ ZAB算法
 
 **实现方式：**
 
-- 数据库
+- 数据库 
 - redis
 - zookeeper
 
 ## 分布式事务
+
+俩阶段提交

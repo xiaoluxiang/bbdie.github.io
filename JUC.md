@@ -208,6 +208,10 @@ JMM：不正确同步程序，不保证与顺序一致性模型一致，并且�
 
 公平锁和非公平锁。公平锁保证所有线程不会饿死，但吞吐率较低。非公平锁：线程尝试加锁时碰上解锁，可能会直接获得锁，这样减少线程的唤醒，整体吞吐率较高。但有的线程会等待很久
 
+# Java多线程
+
+new Thread 搭配call
+
 # 线程池
 
 ## 源码部分
@@ -237,7 +241,7 @@ Executor->ExecutorService->AbstractExecutorService->ThreadPoolExecutor
 >
 > 考虑任务属性是CPU密集型orIO密集型，确定线程池大小->考虑线程池所需资源，确定线程超时时间->考虑优先级->考虑执行时间，确定线程队列
 
-提交：commit，submit
+提交：execute（无返回值，直接抛出异常）submit（有返回值，异常自己get）
 
 关闭：shutdown，shutdownNow
 
@@ -382,7 +386,7 @@ Java**是如何解决多线程并发问题**：通过Java内存模型（happens-
 
 **线程的生命周期**
 
-**线程的使用（中断，互斥，协作）**
+**线程的使用（中断interrupt，互斥，协作）**
 
 ## 理解Java中的锁
 
