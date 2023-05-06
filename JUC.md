@@ -372,42 +372,87 @@ public void release() { }          //释放一个许可
 public void release(int permits) { }    //释放permits个许可
 ```
 
-# JUC记忆思路
+# JUC思维脑图
 
 ## 理解并发
 
-**多线程为出现并发问题**
+**多线程为出现并发问题**：
+CPU为了平衡内存的速度会有缓存，带来了可见性问题（缓存和共享内存数据不一致）
+操作系统为了充分利用CPU采用了时分复用的方案，带来了原子性问题（操作可能完成后就切换上下文，寄存器和程序计数器）
+编译执行程序为了优化程序采用了重新编排执行次序，导致有序性问题（程序执行顺序和编写顺序不一致，编译重排序和cpu重排序）
 
-Java**是如何解决多线程并发问题**：通过Java内存模型（happens-before原则/as-if-serial原则）+synchronized/volatile/final解决
+**Java是如何解决多线程并发问题**：
+通过Java内存模型（按需禁用缓存和编译优化）：（happens-before原则/as-if-serial原则）+synchronized/volatile/final解决
 
-**实现线程安全的方式**：悲观的互斥同步（synchronized/lock），乐观的冲突检测在补偿（CAS），无同步方案（栈内存，threadLocal，pure code）
+happens-before：规定先行原则即一个操作无需控制就能先行另一个操作完成，如果具有happens-before关系，则一个操作的发生再另一个操作之前，且结果对下一个操作可见。具体有单一线程原则、管程锁定规则（锁）、volatile、线程启动规则、线程加入原则、线程中断、对象终结规则、传递性。
+
+**实现线程安全的方式**：
+悲观的互斥同步（synchronized/lock），乐观的冲突检测在补偿（CAS），无同步方案（栈内存，threadLocal，pure code）
 
 ## 理解线程
 
-**线程的生命周期**
+**线程的生命周期**：
+新建、可运行、阻塞（超时）、等待（超时）、终止。
 
 **线程的使用（中断interrupt，互斥，协作）**
+线程新建：extend Thread; new Thread(runable/callable); ThreadPoolExecutor
+普通线程协作机制：
+	Thread.sleep(XX); Thread.yield(XX);  join()
+	下面是属于JUC下面Thread的方法：threadName.interrupt(); threadName.interrupted(); interrupt：设置中断；interrupted：检测中断并清除中断状态；isInterrupted：返回中断状态；
+	wait/notify/notifyAll；线程的阻塞与唤醒，是需要搭配synchronized使用；
+线程池的协作：shutdown：等待所有任务执行完毕后结束。shutdownNow：调用每个线程的interrup方法；
+线程之间的同步协作：synchronized；Lock(condition的await，signal，signall。正常都有的lock和unlock）;
+
+## 理解JUC相关关键字
+
+### volatile详解
+
+可见性：lock指令+插入内存屏障禁止重排序实现可见性
+有序性：插入内存屏障实现有序性
+
+### final详解
+
+**使用**:
+类（所有方法隐形final），方法（private 隐形final，子类虽同名但不同无法父类调用），参数（无法修改参数指向），变量（并非皆为编译器常量，static final定义时赋值，blank final允许后续赋值）
 
 ## 理解Java中的锁
 
-## synchronized详解
+**悲观锁/乐观锁**：悲观锁在使用资源时任务竞争一定会发生。乐观锁认为读的过程无，更新需要检测一下；
+**自旋锁/适应性自旋锁**：阻塞和唤醒一个线程是需要操作系统切换CPU状态来完成的。所以自旋锁就是不放弃CPU执行时间，认为锁很快就会被释放；
+**无锁/偏向锁/轻量级锁/重量级锁**：详见synchronized锁的优化；
+**公平锁和非公平锁**：是指新加入竞争的锁能不能不排队直接竞争资源。正常都会有一个等待队列。如果竞争失败则乖乖排队。
+**可重入锁和不可重入锁**：同一个线程嵌套调用的锁方法能否获取相同的锁。
+**排他锁和共享锁**：读写分离；
 
-**锁代码块（显式指定对象），锁方法（this），锁静态方法（class）**
+### synchronized详解
 
-**原理分析**：加锁（可重入加锁），解锁，保证可见性
+**synchronized使用**：
+锁代码块（显式指定对象），锁方法（修饰方法，public void synchronized），锁静态方法（class）
 
-**JVM锁的优化**：锁粗化，锁消除，偏向锁，轻量级锁，重量级锁
+**原理分析**：
+**加锁**：通过使用cpu指令monitorenter/monitorexit实现，monitor计数器为0，则立即获取锁然后加1，别的等待。已经拿到锁则继续加1表示重入。否则已被获取等待释放。
+**解锁**：monitorexit会导致monitor计数器减1，如果不是0表示当前线程仍然持有这把锁；
+**可重入**：就是通过monitor计数器，尝试获取的加一，程序退出则减一，线程异常则清零。
+保证可见性：
 
-**Synchronized和lock**：优缺点
+**JVM锁的优化**：
+锁粗化：减少不必要的lock和unlock操作，将多个连续的锁合并，减少加锁解锁的性能消耗；
+锁消除：通过逃逸分析，判断哪些无需锁保护的操作；
+无锁：
+偏向锁：如果竞争对象未被锁定，则复制`Mark Word`到线程栈空间创建锁记录存储。然后CAS的修改`Mark Word`使其指向自己。偏向锁是非主动撤销过程，需要等到竞争发生之后再到全局安全点（当前线程不在执行字节码），寻找指向线程判断是否存活，再遍历其栈记录，要么恢复到无锁，要么升级为轻量级锁。
+轻量级锁：就是发生竞争之后，开始自旋（也会有适应性自旋，认为竞争一会就会消失）；
+重量级锁：竞争成功的正常执行，失败的加入阻塞等待队列中；
 
-## volatile详解
+**注意点**：锁对象不能为空，作用域不能太大，要避免死锁。尽量不用；
 
-**可见性**：lock指令+插入内存屏障禁止重排序实现可见性
+### Lock详解
 
-**有序性**：插入内存屏障实现有序性
+默认是非公平锁，当然可以通过显式指定为非公平锁
 
-## final详解
+API：lock(); unlock(); tryLock(); tryLock(long, TimeUtil);
 
-**使用**：类（所有方法隐形final），方法（private 隐形final，子类虽同名但不同无法父类调用），参数（无法修改参数指向），变量（并非皆为编译器常量，static final定义时赋值，blank final允许后续赋值）
+**Synchronized和lock**：
+实现层面不同：lock是JDK实现的，
+Lock可以显示指定为公平锁，可以绑定多个条件，可以被中断，需要自己手动释放
+synchronized为非公平锁，不可被中断，执行完毕或者异常会自动释放锁
 
-**原理**：

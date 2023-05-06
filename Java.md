@@ -290,7 +290,7 @@ get：<br>1. 对于给定key的hashcode值定位数组位置，如果为null，�
 
 解决方案：1、将SimpleDateFormat定义成局部变量。2、 加一把线程同步锁：synchronized(lock)。3、使用ThreadLocal，每个线程都拥有自己的SimpleDateFormat对象副本。4、使用DateTimeFormatter代替SimpleDateFormat。 5、使用JDK8全新的日期和时间API
 
-#### JDK 8 中的日期LocalDateTime, LocalDate, LocalTime.
+JDK 8 中的日期LocalDateTime, LocalDate, LocalTime.
 
 > [LocalDateTime, LocalDate, LocalTime 关系](https://cloud.tencent.com/developer/article/1598040)
 
@@ -335,6 +335,32 @@ public enum Operator {
 ## Feature
 
 > what's the feature, what I think that is pretty fun, so that's 
+
+### ThreadLocal
+
+> 参考博客地址：https://blog.csdn.net/qq_35246620/article/details/106437183
+>
+> ThreadLocal，线程隔离通过副本保证本线程访问资源的安全性，即在多线程中为每一个线程单独创建变量副本，避免了在多线程环境中由于竞争导致数据不一致情况
+
+用法：
+
+```java 
+ThreadLocal<Type> myThreadLocal = new ThreadLocal<XX>();
+// get set remove都会移除ThreadLocalMap中entry的key为null的value；
+myThreadLocal.set(type);
+myThreadLocal.get();
+myThreadLocal.remove();
+```
+
+原理：
+
+<img src="https://raw.githubusercontent.com/xiaoluxiang/picCollect/main/workDesign/img/2020053018053863.png" alt="thread-local" style="zoom:50%;" />
+
+每一个线程都会有一个类型为ThreadLocalMap的threadLocals本地变量，该变量默认16，实际上是一个table里面每一个都是Entry`class Entry extends WeakReference<ThreadLocal<?>>` 。访问都是代码层自定义寻址方法（hash映射后从entry中取值）。
+
+调用set方法时传递为threadLocals的set，该对象保留了自定义了hashcode映射值与斐波那契散列乘数`0x61c88647`可以较好的散列；
+
+内存泄漏原因：Entry中的Key是一个弱应用，若threadLocal不存在，则其会被GC，但是Value是一个强引用，其对象会在伴随着回收之后无法释放，其生命周期为线程的生命周期，尤其是当使用线程池时问题格外严重；及时remove即可
 
 # IO 
 

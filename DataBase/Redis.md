@@ -62,7 +62,10 @@ type决定数据类型，encoding决定编码方式，lru记录空转时间，re
 
 ## 数据类型
 
-### String
+> 五种基本数据结构：String, List, Set, Zset, Hash。外加三种：Bitmap，HyperLogLogs，geospatial；
+>
+
+## String
 
 ​	操作命令
 
