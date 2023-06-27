@@ -154,6 +154,7 @@ select [distinct] XX from XX [join on] where [算数运算符] [逻辑运算符]
 update XX set XX where XX;
 update a,b set a.XX = b.XX where a.xx = b.xx;
 
+-- join详解，参照数学上的交集，数据的横向补长，union会纵向补充
 -- join详解，参照数学上的交集
 select a.XX, b.XX from a [left join, inner join, right join] b on a.XX = b.XX;
 ```
