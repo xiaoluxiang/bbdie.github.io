@@ -497,6 +497,10 @@ spring默认工作逻辑是拿到启动类的注解，这些注解被注解处�
 
 支持当前事务：propagation.required/support/mandatory；不支持当前事务：propagation.required_new/not_supported/never；其他：propagation.nested(如果当前存在事务就嵌套执行，否则就是required)
 
+![img](https://raw.githubusercontent.com/xiaoluxiang/picCollect/main/workDesign/img/b65aebc8795a6bf8fd9909c677e712e7abfda6.png)
+
+事务失效若干种情况：数据库不支持事务，事务方法的权限修饰符非pubilc，内部异常处理，事务传播，事务回滚类型，类内部调用；
+
 ## 定时任务schedule
 
 ## 文件下载上传

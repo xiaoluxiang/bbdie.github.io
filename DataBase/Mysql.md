@@ -330,7 +330,77 @@ MVCC是分为当前读和快照读<br>**针对快照读**（普通 select 语句
 
 ### 数据库层面
 
+<<<<<<< Updated upstream
 表结构字段设计的是否合理；
+=======
+通过explain，分析查询过程，查看索引覆盖情况。观察select_type, key,rows等关键指标
+
+通过分库分表的方式
+
+### 单次查询层面
+
+避免使用select*，尽量使用limit，尽量通过索引。
+
+### 复杂查询层面
+
+查分多次小查询（有效利用缓存，避免阻塞）方便日后扩展。
+
+## SQL优化技巧
+
+> 原则是尽量更好命中索引的和快速命中行
+
+**命中索引：**不在索引上计算，不使用负向查询，不使用前导模糊查询，查询条件要一致；
+
+**更好使用索引：**避免回表查询，尽量使用联合索引
+
+**SQL优化：**
+
+# MySQL语法
+
+## alter
+
+- 数据库表字段的增删查改，[**MySQL修改字段名、修改字段类型**](https://blog.csdn.net/u010002184/article/details/79354136)
+
+```mysql
+-- MySQL 常规语法
+
+--show 
+show variable like '';
+show status like '';
+show create table tableName;
+
+-- select 
+select XX from where XX order by XX
+
+-- update
+
+-- alter 记忆顺序，表->索引->字段增改删-> 
+alter table XX rename to newTableName;
+alter table XX add Index indexName(lineName);
+alter table XX add column columnName...;
+alter table XX add column columnName... before/after columnName;
+alter table XX modify column columnName ...;
+alter table XX change column oldColumnName newColunmName...;
+alter table XX drop column columnName;
+```
+
+
+
+## MySQL on duplicate key update
+
+> 参考[***博文***](https://www.cnblogs.com/better-farther-world2099/articles/11737376.html)
+
+1. 语句含义，无则插入，有则更新，update后直接跟条件即可
+2. 自增主键不会连续自增
+3. 会产生DeathLock的问题
+4. 替代方案就是先进行update，根据结果进行判断是否进行insert
+
+## last_insert_id
+
+> 使用[***last_insert_id***](https://blog.csdn.net/slvher/article/details/42298355)注意事项
+
+small squirrel good night 
+>>>>>>> Stashed changes
 
 分库分表；
 
@@ -409,10 +479,23 @@ MQ的定时消息
 
 **回调函数**：把函数的指针（地址）作为参数传递给另一个函数，当这个指针调用其所指向的函数时，就称这是回调函数。
 
+<<<<<<< Updated upstream
 **多态：**同一段代码执行时却表现出不同的行为状态。简单的说，可以理解为允许将不同的子类类型的对象动态赋值给父类类型的变量，通过父类的变量调用方法在执行时实际执行的可能是不同的子类对象方法，因而表现出不同的执行效果。
+=======
+**2、不在索引列上做任何操作**
+>>>>>>> Stashed changes
 
 **闭包**：函数和对其周围状态的引用捆绑在一起构成闭包。也就是说，闭包可以让你从内部函数访问外部函数作用域。
 
+<<<<<<< Updated upstream
 **异步调用**：promise将异步调用以同步的流程表达出来，避免嵌套回调函数，简化了回调函数传入的接口实现。
 
 **匿名函数**：lamda函数在常见的命令式编程语言中以匿名函数的形式出现，比如无参数的代码块或者箭头函数
+=======
+
+
+
+1.负责开发客户信息入库，对不同渠道和类别的客户生成案件，更新案件，结案。 按照业务规则对客户进行短信催收，推 送合作方催收;合作方催收记录批量回盘、影像平台自动存档、批量推送数仓。同时在web页面上提供对案件的手动停复 催、电话催收等功能及以上信息的增删改查功能等; 
+
+2.使用Maven、Git、Jenkins、SVN负责自动化构建、设计文档UAT准入投产手册等存档;
+>>>>>>> Stashed changes

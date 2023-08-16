@@ -191,3 +191,8 @@ Git文件记录方式：Git记录各历史版本的全量快照，但是为了�
 3. commit合并：git rebase -i HEAD~4
 4. branch合并：git rebase master/git merge master
 5. commit转接：cherry-pick
+<<<<<<< HEAD
+=======
+
+LATEX
+>>>>>>> 2d3d04346993a0bd92580c05f2e9a99ab73b2a68
