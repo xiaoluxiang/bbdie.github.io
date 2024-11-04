@@ -40,6 +40,8 @@ bean的作用域，在spring中，主要包括singleton,prototype,session,reques
 ### IOC循环依赖
 
 > Bean的获取可通过getBean()方法，通过BeanName到BeanDefinition中获得BeanClassName。通过反射构建实例。如果是单例。还可以缓存下来，以供下次使用
+>
+> https://www.51cto.com/article/747437.html
 
 #### 单例循环依赖
 
@@ -191,7 +193,8 @@ BeanFactoryPostProcesser：可以在Bean实例化之前修改BeanFactory中的Be
 
 1. InstantiationAwareBeanPostProcessor在实例化前&后，让我们介入到Bean生成前后，InstantiationAwareBeanPostProcessor
 2. Aware通知接口，在我们知道实例化和初始化中间的中间信息
-3. BeanPostProcessor在初始化的前后。在这里Bean已经生成，故BeanPostProcessor
+3. BeanPostProcessor在初始化的前后。在这里Bean已经生成
+4. ，故BeanPostProcessor
 
 ~~~txt
 /* 
